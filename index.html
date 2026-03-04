@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abra Casa — Experiência AR</title>
+  <meta name="description"
+    content="Demonstração exclusiva de realidade aumentada para a Abra Casa. Veja móveis na sua sala antes de comprar.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Model Viewer -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --burgundy: #ab0033;
+      --burgundy-dark: #8a002a;
+      --burgundy-light: rgba(171, 0, 51, 0.08);
+      --white: #ffffff;
+      --light-grey: #f5f5f5;
+      --dark-grey: #222222;
+      --medium-grey: #666666;
+      --border-grey: #e0e0e0;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14);
+      --radius: 12px;
+      --transition: 0.2s ease;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark-grey);
+      background: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── Demo Banner ─────────────────────────────────────── */
+    .demo-banner {
+      background: var(--burgundy);
+      color: var(--white);
+      text-align: center;
+      padding: 16px 20px;
+    }
+
+    .demo-banner p {
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0.95;
+    }
+
+    .demo-banner p:first-child {
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .demo-banner p:last-child {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 6px;
+    }
+
+    /* ─── Header ──────────────────────────────────────────── */
+    .header {
+      text-align: center;
+      padding: 40px 20px 32px;
+      background: var(--white);
+    }
+
+    .header-logo {
+      max-width: 220px;
+      margin: 0 auto 20px;
+    }
+
+    .header-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--dark-grey);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+
+    /* ─── How It Works ────────────────────────────────────── */
+    .how-it-works {
+      background: var(--light-grey);
+      padding: 48px 20px;
+      text-align: center;
+    }
+
+    .how-it-works h2 {
+      font-size: 28px;
+      color: var(--dark-grey);
+      margin-bottom: 32px;
+    }
+
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      max-width: 600px;
+      margin: 0 auto 24px;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      flex: 1;
+      min-width: 140px;
+      max-width: 180px;
+    }
+
+    .step-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .step-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark-grey);
+      line-height: 1.4;
+    }
+
+    .how-it-works .note {
+      font-size: 14px;
+      color: var(--medium-grey);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ─── Section Titles ──────────────────────────────────── */
+    .section-title {
+      text-align: center;
+      padding: 48px 20px 8px;
+    }
+
+    .section-title h2 {
+      font-size: 28px;
+      color: var(--dark-grey);
+    }
+
+    .section-title p {
+      font-size: 15px;
+      color: var(--medium-grey);
+      margin-top: 8px;
+    }
+
+    /* ─── Product Grid ────────────────────────────────────── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    @media (min-width: 768px) {
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        padding: 24px 32px 64px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .product-grid {
+        padding: 32px 40px 80px;
+      }
+    }
+
+    /* ─── Product Card ────────────────────────────────────── */
+    .product-card {
+      background: var(--white);
+      border: 1px solid var(--border-grey);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow var(--transition), transform var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .product-card-image {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--light-grey);
+    }
+
+    .product-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-card-image img {
+      transform: scale(1.04);
+    }
+
+    .product-category-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--burgundy);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .product-card-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark-grey);
+      line-height: 1.35;
+      margin-bottom: 6px;
+      min-height: 40px;
+    }
+
+    .product-card-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--burgundy);
+      margin-bottom: 14px;
+    }
+
+    .product-card-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .btn-3d {
+      background: var(--dark-grey);
+      color: var(--white);
+    }
+
+    .btn-3d:hover {
+      background: #000;
+    }
+
+    .btn-ar {
+      background: var(--burgundy);
+      color: var(--white);
+    }
+
+    .btn-ar:hover {
+      background: var(--burgundy-dark);
+    }
+
+    @media (min-width: 768px) {
+      .product-card-name {
+        font-size: 16px;
+      }
+
+      .product-card-price {
+        font-size: 20px;
+      }
+
+      .btn {
+        font-size: 13px;
+        padding: 11px 10px;
+      }
+    }
+
+    /* ─── 3D Modal ─────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: var(--white);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition);
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .modal-viewer-container {
+      width: 100%;
+      max-width: 700px;
+      aspect-ratio: 1 / 1;
+      max-height: 60vh;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+
+    .modal-viewer-container model-viewer {
+      width: 100%;
+      height: 100%;
+    }
+
+    .modal-info {
+      text-align: center;
+      color: var(--white);
+      margin-top: 20px;
+    }
+
+    .modal-info h3 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .modal-info .modal-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--burgundy);
+      color: #ff4d7a;
+      margin-bottom: 16px;
+    }
+
+    .modal-link {
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--white);
+      color: var(--dark-grey);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: all var(--transition);
+    }
+
+    .modal-link:hover {
+      background: var(--light-grey);
+      transform: translateY(-1px);
+    }
+
+    /* ─── AR Hidden model-viewer ───────────────────────────── */
+    .ar-viewer-hidden {
+      position: fixed;
+      top: -9999px;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ─── Toast ────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--dark-grey);
+      color: var(--white);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.35s ease;
+      text-align: center;
+      max-width: 90vw;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ─── Footer ───────────────────────────────────────────── */
+    .footer {
+      background: var(--dark-grey);
+      color: var(--white);
+      text-align: center;
+      padding: 56px 20px;
+    }
+
+    .footer h2 {
+      font-size: 26px;
+      margin-bottom: 24px;
+      color: var(--white);
+    }
+
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: #25D366;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 50px;
+      transition: all var(--transition);
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-whatsapp:hover {
+      background: #1fb855;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4);
+    }
+
+    .btn-whatsapp svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--white);
+    }
+
+    .footer-credit {
+      margin-top: 32px;
+      font-size: 12px;
+      opacity: 0.5;
+      line-height: 1.6;
+    }
+
+    /* ─── Scrollbar ────────────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--light-grey);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ DEMO BANNER ═══ -->
+  <div class="demo-banner">
+    <p>Demonstração exclusiva criada para a Abra Casa</p>
+    <p>Esta página foi desenvolvida especialmente para mostrar como a experiência AR funcionaria na sua loja</p>
+    <p>Não é um site público — criado por Tiago Buhr</p>
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header">
+    <img src="https://www.abracasa.com.br/image/logo_atelie_abracasa.svg" alt="Abra Casa" class="header-logo">
+    <p class="header-tagline">Veja nossos produtos na sua sala, antes de comprar.</p>
+  </header>
+
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <section class="how-it-works">
+    <h2>Como funciona?</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-icon">📱</span>
+        <span class="step-label">Abra no celular</span>
+      </div>
+      <div class="step">
+        <span class="step-icon">🛋️</span>
+        <span class="step-label">Escolha um produto</span>
+      </div>
+      <div class="step">
+        <span class="step-icon">🏠</span>
+        <span class="step-label">Veja na sua sala em AR</span>
+      </div>
+    </div>
+    <p class="note">Sem baixar nenhum aplicativo. Funciona direto no navegador do celular.</p>
+  </section>
+
+  <!-- ═══ PRODUCT SECTION ═══ -->
+  <div class="section-title">
+    <h2>Nossos Produtos</h2>
+    <p>Toque em "Ver em 3D" para explorar ou "Ver na sala" para usar AR</p>
+  </div>
+
+  <div class="product-grid" id="productGrid"></div>
+
+  <!-- ═══ 3D MODAL ═══ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+    <div class="modal-viewer-container">
+      <model-viewer id="modalViewer" src="" auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
+        style="width:100%;height:100%;background:#1a1a1a;"></model-viewer>
+    </div>
+    <div class="modal-info">
+      <h3 id="modalName"></h3>
+      <p class="modal-price" id="modalPrice"></p>
+      <a href="#" id="modalLink" class="modal-link" target="_blank" rel="noopener">Ver no site →</a>
+    </div>
+  </div>
+
+  <!-- ═══ AR HIDDEN VIEWER ═══ -->
+  <model-viewer id="arViewer" class="ar-viewer-hidden" src="" ar ar-modes="webxr scene-viewer quick-look"
+    ar-scale="auto"></model-viewer>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <h2>Gostou do que viu?<br>Vamos conversar.</h2>
+    <a href="https://wa.me/5521971174398?text=Olá!%20Vi%20a%20demonstração%20AR%20dos%20produtos%20da%20Abra%20Casa%20e%20gostaria%20de%20saber%20mais."
+      class="btn-whatsapp" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+      </svg>
+      Falar no WhatsApp
+    </a>
+    <p class="footer-credit">
+      Demonstração técnica desenvolvida por Tiago Buhr — tiagobuhr@gmail.com
+    </p>
+  </footer>
+
+  <script>
+    // ─── Product Data ──────────────────────────────────────
+    const products = [
+      { name: "Poltrona Costela Slim com Puff", price: "R$ 1.499,88", category: "poltrona", slug: "poltrona-costela-slim-com-puff-trellis-grafite", glb: "models/poltrona-costela-slim-com-puff-trellis-grafite.glb", url: "https://www.abracasa.com.br/poltrona-costela-com-puff-slim-trellis-grafite/p?skuId=2009072", image: "https://abracasa.vteximg.com.br/arquivos/ids/201950/poltrona-costela-com-puff-slim-trellis-grafite.jpg?v=638820744169070000" },
+      { name: "Poltrona Maggiolina com Puff", price: "R$ 3.798,88", category: "poltrona", slug: "poltrona-maggiolina-com-puff-caramelo", glb: "models/poltrona-maggiolina-com-puff-caramelo.glb", url: "https://www.abracasa.com.br/poltrona-maggiolina-com-puff---caramelo/p?skuId=2008732", image: "https://abracasa.vteximg.com.br/arquivos/ids/220896/IMG_6738-1000x1000.jpg?v=639020914485370000" },
+      { name: "Poltrona Costela com Puff Caramelo", price: "R$ 1.999,88", category: "poltrona", slug: "poltrona-com-puff-costela-caramelo", glb: "models/poltrona-com-puff-costela-caramelo.glb", url: "https://www.abracasa.com.br/poltrona-costela-com-puff-caramelo/p?skuId=2006592", image: "https://abracasa.vteximg.com.br/arquivos/ids/202006/2021_PoltronaCostelaCaramelo.jpg?v=638821365945070000" },
+      { name: "Poltrona Costela com Puff Tent Pesto", price: "R$ 1.999,88", category: "poltrona", slug: "poltrona-costela-com-puff-tent-pesto", glb: "models/poltrona-costela-com-puff-tent-pesto.glb", url: "https://www.abracasa.com.br/poltrona-costela-com-puff-tent-pesto/p?skuId=2012451", image: "https://abracasa.vteximg.com.br/arquivos/ids/215184/xg2.jpg?v=638936346739230000" },
+      { name: "Sofá Noah Trento Verde Pesto", price: "R$ 2.999,88", category: "sofa", slug: "sofa-noah-trento-verde-pesto", glb: "models/sofa-noah-trento-verde-pesto.glb", url: "https://www.abracasa.com.br/sofa-noah-trento-verde-pesto/p?skuId=2010602", image: "https://abracasa.vteximg.com.br/arquivos/ids/202773/Shooting-02-07-163_HQ_1000x1000.jpg?v=638823085093830000" },
+      { name: "Sofá Giro Trento Verde Pesto", price: "R$ 3.699,88", category: "sofa", slug: "sofa-giro-trento-verde-pesto", glb: "models/sofa-giro-trento-verde-pesto.glb", url: "https://www.abracasa.com.br/sofa-giro-trento-verde-pesto/p?skuId=2010776", image: "https://abracasa.vteximg.com.br/arquivos/ids/221728/sofa-diagonal.jpg?v=639047035446670000" },
+      { name: "Sofá Giro Botonê Tijolo", price: "R$ 3.599,88", category: "sofa", slug: "sofa-giro-botone-tijolo", glb: "models/sofa-giro-botone-tijolo.glb", url: "https://www.abracasa.com.br/sofa-giro-botone-tijolo/p?skuId=2010609", image: "https://abracasa.vteximg.com.br/arquivos/ids/206388/xg1.jpg?v=638847327186500000" },
+      { name: "Sofá Flip Silver Cinza Mesclado", price: "R$ 2.368,88", category: "sofa", slug: "sofa-flip-silver-trama-larga-cinza-mesclado", glb: "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb", url: "https://www.abracasa.com.br/sofa-flip-silver-trama-larga-cinza-mesclado/p?skuId=2008102", image: "https://abracasa.vteximg.com.br/arquivos/ids/206938/sofa-flip-silver-trama-larga-cinza-mesclado-170-diagonal.jpg?v=638851618760730000" }
+    ];
+
+    // ─── Render Product Grid ───────────────────────────────
+    const grid = document.getElementById('productGrid');
+
+    grid.innerHTML = products.map((p, i) => `
+      <div class="product-card" id="card-${i}">
+        <div class="product-card-image">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <span class="product-category-tag">${p.category === 'poltrona' ? 'Poltrona' : 'Sofá'}</span>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-card-name">${p.name}</h3>
+          <p class="product-card-price">${p.price}</p>
+          <div class="product-card-buttons">
+            <button class="btn btn-3d" onclick="open3D(${i})">Ver em 3D</button>
+            <button class="btn btn-ar" onclick="openAR(${i})">Ver na sala 🏠</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // ─── 3D Modal ──────────────────────────────────────────
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalViewer = document.getElementById('modalViewer');
+    const modalName = document.getElementById('modalName');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalLink = document.getElementById('modalLink');
+    const modalClose = document.getElementById('modalClose');
+
+    function open3D(index) {
+      const p = products[index];
+      modalViewer.setAttribute('src', p.glb);
+      modalName.textContent = p.name;
+      modalPrice.textContent = p.price;
+      modalLink.href = p.url;
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close3D() {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      // Delay clearing src to avoid visual glitch
+      setTimeout(() => modalViewer.setAttribute('src', ''), 300);
+    }
+
+    modalClose.addEventListener('click', close3D);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) close3D();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close3D();
+    });
+
+    // ─── AR Mode ───────────────────────────────────────────
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    function openAR(index) {
+      if (!isMobile()) {
+        showToast('📱 Abra esta página no celular para usar o AR');
+        return;
+      }
+
+      const p = products[index];
+      const arViewer = document.getElementById('arViewer');
+      arViewer.setAttribute('src', p.glb);
+
+      // Wait for the model to load, then activate AR
+      const onLoad = () => {
+        arViewer.activateAR();
+        arViewer.removeEventListener('load', onLoad);
+      };
+
+      // Check if already loaded with same src
+      if (arViewer.src && arViewer.src.endsWith(p.glb) && arViewer.loaded) {
+        arViewer.activateAR();
+      } else {
+        arViewer.addEventListener('load', onLoad);
+      }
+    }
+
+    // ─── Toast ─────────────────────────────────────────────
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+
+</body>
+
+</html>
