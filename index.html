@@ -429,15 +429,61 @@
       transform: translateY(-1px);
     }
 
-    /* ─── AR Hidden model-viewer ───────────────────────────── */
-    .ar-viewer-hidden {
+    /* ─── AR Loading Overlay ──────────────────────────────── */
+    .ar-loading-overlay {
       position: fixed;
-      top: -9999px;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-      pointer-events: none;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .ar-loading-overlay.active {
+      display: flex;
+    }
+
+    .ar-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .modal-ar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 24px;
+      background: var(--burgundy);
+      color: var(--white);
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-left: 12px;
+    }
+
+    .modal-ar-btn:hover {
+      background: var(--burgundy-dark);
+      transform: translateY(-1px);
     }
 
     /* ─── Toast ────────────────────────────────────────────── */
@@ -577,18 +623,24 @@
     <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
     <div class="modal-viewer-container">
       <model-viewer id="modalViewer" src="" auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
+        ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto"
         style="width:100%;height:100%;background:#1a1a1a;"></model-viewer>
     </div>
     <div class="modal-info">
       <h3 id="modalName"></h3>
       <p class="modal-price" id="modalPrice"></p>
-      <a href="#" id="modalLink" class="modal-link" target="_blank" rel="noopener">Ver no site →</a>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+        <a href="#" id="modalLink" class="modal-link" target="_blank" rel="noopener">Ver no site →</a>
+        <button class="modal-ar-btn" id="modalArBtn" onclick="triggerARFromModal()">🏠 Ver na sala</button>
+      </div>
     </div>
   </div>
 
-  <!-- ═══ AR HIDDEN VIEWER ═══ -->
-  <model-viewer id="arViewer" class="ar-viewer-hidden" src="" ar ar-modes="webxr scene-viewer quick-look"
-    ar-scale="auto"></model-viewer>
+  <!-- ═══ AR LOADING OVERLAY ═══ -->
+  <div class="ar-loading-overlay" id="arLoading">
+    <div class="ar-spinner"></div>
+    <span>Carregando modelo 3D...</span>
+  </div>
 
   <!-- ═══ TOAST ═══ -->
   <div class="toast" id="toast"></div>
@@ -680,6 +732,8 @@
       return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
+    let currentArIndex = -1;
+
     function openAR(index) {
       if (!isMobile()) {
         showToast('📱 Abra esta página no celular para usar o AR');
@@ -687,20 +741,64 @@
       }
 
       const p = products[index];
-      const arViewer = document.getElementById('arViewer');
-      arViewer.setAttribute('src', p.glb);
+      currentArIndex = index;
 
-      // Wait for the model to load, then activate AR
-      const onLoad = () => {
-        arViewer.activateAR();
-        arViewer.removeEventListener('load', onLoad);
+      // Show loading overlay
+      const loading = document.getElementById('arLoading');
+      loading.classList.add('active');
+
+      // Use the modal's model-viewer (it has ar attributes)
+      const viewer = document.getElementById('modalViewer');
+      const currentSrc = viewer.getAttribute('src');
+
+      const launchAR = () => {
+        loading.classList.remove('active');
+        if (viewer.canActivateAR) {
+          viewer.activateAR();
+        } else {
+          showToast('😔 AR não suportado neste dispositivo. Use "Ver em 3D" para visualizar.');
+        }
       };
 
-      // Check if already loaded with same src
-      if (arViewer.src && arViewer.src.endsWith(p.glb) && arViewer.loaded) {
-        arViewer.activateAR();
+      if (currentSrc === p.glb) {
+        // Model already loaded
+        loading.classList.remove('active');
+        if (viewer.canActivateAR) {
+          viewer.activateAR();
+        } else {
+          showToast('😔 AR não suportado neste dispositivo. Use "Ver em 3D" para visualizar.');
+        }
       } else {
-        arViewer.addEventListener('load', onLoad);
+        // Load the model first, then activate AR
+        viewer.setAttribute('src', p.glb);
+        modalName.textContent = p.name;
+        modalPrice.textContent = p.price;
+        modalLink.href = p.url;
+
+        const onLoad = () => {
+          viewer.removeEventListener('load', onLoad);
+          // Small delay to ensure AR subsystem is ready
+          setTimeout(launchAR, 300);
+        };
+        viewer.addEventListener('load', onLoad);
+
+        // Timeout fallback if model takes too long
+        setTimeout(() => {
+          loading.classList.remove('active');
+        }, 15000);
+      }
+    }
+
+    function triggerARFromModal() {
+      const viewer = document.getElementById('modalViewer');
+      if (!isMobile()) {
+        showToast('📱 Abra esta página no celular para usar o AR');
+        return;
+      }
+      if (viewer.canActivateAR) {
+        viewer.activateAR();
+      } else {
+        showToast('😔 AR não suportado neste dispositivo');
       }
     }
 
