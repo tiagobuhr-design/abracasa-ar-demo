@@ -736,15 +736,13 @@
       return /Android/i.test(navigator.userAgent);
     }
 
-    function isIOS() {
-      return /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    }
-
     // Build absolute URL to the GLB file
     function getAbsoluteGlbUrl(glbPath) {
       const base = window.location.href.replace(/\/[^\/]*$/, '/');
       return base + glbPath;
     }
+
+    let pendingAR = false;
 
     function openAR(index) {
       if (!isMobile()) {
@@ -753,43 +751,68 @@
       }
 
       const p = products[index];
-      const glbUrl = getAbsoluteGlbUrl(p.glb);
 
-      if (isAndroid()) {
-        // Android: Direct Scene Viewer intent — most reliable approach
-        const fallbackUrl = encodeURIComponent(window.location.href);
-        const fileUrl = encodeURIComponent(glbUrl);
-        const title = encodeURIComponent(p.name);
-        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+      // Strategy: Open the 3D modal (makes model-viewer VISIBLE),
+      // load the model, then trigger activateAR().
+      // model-viewer auto-converts GLB→USDZ for iOS Quick Look.
+      pendingAR = true;
+      open3D(index);
 
-        // Create a temporary link and click it
-        const a = document.createElement('a');
-        a.href = intentUrl;
-        a.click();
-      } else if (isIOS()) {
-        // iOS: Quick Look needs USDZ (we have GLB only)
-        // Fallback: open the 3D modal so they can still interact
-        showToast('📱 AR no iPhone requer formato USDZ. Abrindo visualização 3D...');
-        setTimeout(() => open3D(index), 1500);
+      const viewer = document.getElementById('modalViewer');
+
+      const tryAR = () => {
+        if (viewer.canActivateAR) {
+          viewer.activateAR();
+          pendingAR = false;
+        } else if (isAndroid()) {
+          // Fallback: direct Scene Viewer for Android
+          pendingAR = false;
+          const glbUrl = getAbsoluteGlbUrl(p.glb);
+          const fallbackUrl = encodeURIComponent(window.location.href);
+          const fileUrl = encodeURIComponent(glbUrl);
+          const title = encodeURIComponent(p.name);
+          const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+          const a = document.createElement('a');
+          a.href = intentUrl;
+          a.click();
+        } else {
+          pendingAR = false;
+          showToast('🛋️ Gire o modelo com o dedo para explorar em 3D!');
+        }
+      };
+
+      // Wait for model to fully load
+      const onLoad = () => {
+        viewer.removeEventListener('load', onLoad);
+        // Give model-viewer a moment to set up AR subsystem
+        setTimeout(tryAR, 500);
+      };
+
+      // Check if model is already loaded
+      if (viewer.loaded && viewer.getAttribute('src') === p.glb) {
+        setTimeout(tryAR, 300);
+      } else {
+        viewer.addEventListener('load', onLoad);
+        // Safety timeout
+        setTimeout(() => {
+          if (pendingAR) {
+            pendingAR = false;
+            showToast('🛋️ Modelo carregado! Use o botão "Ver na sala" abaixo para AR.');
+          }
+        }, 20000);
       }
     }
 
     function triggerARFromModal() {
+      const viewer = document.getElementById('modalViewer');
       if (!isMobile()) {
         showToast('📱 Abra esta página no celular para usar o AR');
         return;
       }
-
-      // Find which product is loaded in the modal
-      const viewer = document.getElementById('modalViewer');
-      const currentSrc = viewer.getAttribute('src');
-      const index = products.findIndex(p => p.glb === currentSrc);
-
-      if (index >= 0) {
-        close3D();
-        setTimeout(() => openAR(index), 300);
+      if (viewer.canActivateAR) {
+        viewer.activateAR();
       } else {
-        showToast('Carregue um produto primeiro');
+        showToast('🛋️ Gire o modelo com o dedo para explorar em 3D!');
       }
     }
 
