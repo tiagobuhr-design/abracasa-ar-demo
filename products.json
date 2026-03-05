@@ -7,7 +7,7 @@
     "category": "poltrona",
     "slug": "poltrona-costela-slim-com-puff-trellis-grafite",
     "glb_path": "models/poltrona-costela-slim-com-puff-trellis-grafite.glb",
-    "usdz_path": null
+    "usdz_path": "models/poltrona-costela-slim-com-puff-trellis-grafite.usdz"
   },
   {
     "name": "Poltrona Maggiolina com Puff - Caramelo",
@@ -17,7 +17,7 @@
     "category": "poltrona",
     "slug": "poltrona-maggiolina-com-puff-caramelo",
     "glb_path": "models/poltrona-maggiolina-com-puff-caramelo.glb",
-    "usdz_path": null
+    "usdz_path": "models/poltrona-maggiolina-com-puff-caramelo.usdz"
   },
   {
     "name": "Poltrona com Puff Costela - Caramelo",
@@ -27,7 +27,7 @@
     "category": "poltrona",
     "slug": "poltrona-com-puff-costela-caramelo",
     "glb_path": "models/poltrona-com-puff-costela-caramelo.glb",
-    "usdz_path": null
+    "usdz_path": "models/poltrona-com-puff-costela-caramelo.usdz"
   },
   {
     "name": "Poltrona Costela com Puff Tent Pesto",
@@ -37,7 +37,7 @@
     "category": "poltrona",
     "slug": "poltrona-costela-com-puff-tent-pesto",
     "glb_path": "models/poltrona-costela-com-puff-tent-pesto.glb",
-    "usdz_path": null
+    "usdz_path": "models/poltrona-costela-com-puff-tent-pesto.usdz"
   },
   {
     "name": "Sofá Noah Trento Verde Pesto",
@@ -47,7 +47,7 @@
     "category": "sofa",
     "slug": "sofa-noah-trento-verde-pesto",
     "glb_path": "models/sofa-noah-trento-verde-pesto.glb",
-    "usdz_path": null
+    "usdz_path": "models/sofa-noah-trento-verde-pesto.usdz"
   },
   {
     "name": "Sofá Giro Trento Verde Pesto",
@@ -57,7 +57,7 @@
     "category": "sofa",
     "slug": "sofa-giro-trento-verde-pesto",
     "glb_path": "models/sofa-giro-trento-verde-pesto.glb",
-    "usdz_path": null
+    "usdz_path": "models/sofa-giro-trento-verde-pesto.usdz"
   },
   {
     "name": "Sofá Giro Botonê Tijolo",
@@ -67,7 +67,7 @@
     "category": "sofa",
     "slug": "sofa-giro-botone-tijolo",
     "glb_path": "models/sofa-giro-botone-tijolo.glb",
-    "usdz_path": null
+    "usdz_path": "models/sofa-giro-botone-tijolo.usdz"
   },
   {
     "name": "Sofá Flip Silver Trama Larga Cinza Mesclado",
@@ -77,6 +77,6 @@
     "category": "sofa",
     "slug": "sofa-flip-silver-trama-larga-cinza-mesclado",
     "glb_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb",
-    "usdz_path": null
+    "usdz_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.usdz"
   }
 ]

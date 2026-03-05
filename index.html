@@ -744,6 +744,11 @@
     function open3D(index) {
       const p = products[index];
       modalViewer.setAttribute('src', p.glb);
+      if (p.usdz_path) {
+        modalViewer.setAttribute('ios-src', p.usdz_path);
+      } else {
+        modalViewer.removeAttribute('ios-src');
+      }
       modalName.textContent = p.name;
       modalPrice.textContent = p.price;
       modalLink.href = p.url;
