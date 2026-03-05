@@ -776,34 +776,49 @@
       return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    // "Ver na sala" from product card:
-    // Opens the 3D modal so model-viewer becomes visible and loads the GLB.
-    // model-viewer's native slot="ar-button" handles AR activation with
-    // proper iOS gesture chain (no setTimeout = no popup blocking).
+    // Direct OS-level AR intents (bypassing model-viewer for instant launch)
     function openAR(index) {
       if (!isMobile()) {
         showToast('📱 Abra esta página no celular para usar o AR');
         return;
       }
-      // Open the 3D modal (model-viewer needs to be visible)
-      open3D(index);
-      showToast('👆 Modelo carregando... Toque no botão verde para ver na sua sala!');
-    }
 
-    // "Ver na sala" button in modal info bar:
-    // Directly calls activateAR — this works because it's a direct user tap.
-    function triggerARFromModal() {
-      const viewer = document.getElementById('modalViewer');
-      if (!isMobile()) {
-        showToast('📱 Abra esta página no celular para usar o AR');
+      const p = products[index];
+      const base = window.location.href.split('?')[0].replace(/\/[^\/]*$/, '/');
+
+      // iOS: Apple AR Quick Look
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        const usdzPath = p.glb.replace(/\.glb$/i, '.usdz');
+        const a = document.createElement('a');
+        a.setAttribute('rel', 'ar');
+        const img = document.createElement('img');
+        a.appendChild(img);
+        a.href = base + usdzPath;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
         return;
       }
-      // Direct call from user tap — preserves gesture chain
-      if (viewer.canActivateAR) {
-        viewer.activateAR();
-      } else {
-        showToast('⏳ Aguarde o modelo carregar, depois toque no botão verde acima.');
+
+      // Android: Google Scene Viewer
+      if (/Android/i.test(navigator.userAgent)) {
+        const glbUrl = base + p.glb;
+        const fallbackUrl = encodeURIComponent(window.location.href);
+        const fileUrl = encodeURIComponent(glbUrl);
+        const title = encodeURIComponent(p.name);
+        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+
+        const a = document.createElement('a');
+        a.href = intentUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
       }
+    }
+
+    function triggerARFromModal(index) {
+      openAR(index);
     }
 
     // ─── Toast ─────────────────────────────────────────────
