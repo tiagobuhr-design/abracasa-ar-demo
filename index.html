@@ -572,6 +572,42 @@
       background: #ccc;
       border-radius: 3px;
     }
+
+    /* AR native slot button */
+    .ar-slot-button {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+      z-index: 10;
+      animation: arPulse 2s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .ar-slot-button:active {
+      transform: translateX(-50%) scale(0.95);
+    }
+
+    @keyframes arPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 4px 24px rgba(34, 197, 94, 0.7);
+      }
+    }
   </style>
 </head>
 
@@ -623,8 +659,11 @@
     <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
     <div class="modal-viewer-container">
       <model-viewer id="modalViewer" src="" auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
-        ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto"
-        style="width:100%;height:100%;background:#1a1a1a;"></model-viewer>
+        ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" style="width:100%;height:100%;background:#1a1a1a;">
+        <button slot="ar-button" id="arSlotBtn" class="ar-slot-button">
+          🏠 Toque para ver na sua sala
+        </button>
+      </model-viewer>
     </div>
     <div class="modal-info">
       <h3 id="modalName"></h3>
@@ -732,87 +771,33 @@
       return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     }
 
-    function isAndroid() {
-      return /Android/i.test(navigator.userAgent);
-    }
-
-    // Build absolute URL to the GLB file
-    function getAbsoluteGlbUrl(glbPath) {
-      const base = window.location.href.replace(/\/[^\/]*$/, '/');
-      return base + glbPath;
-    }
-
-    let pendingAR = false;
-
+    // "Ver na sala" from product card:
+    // Opens the 3D modal so model-viewer becomes visible and loads the GLB.
+    // model-viewer's native slot="ar-button" handles AR activation with
+    // proper iOS gesture chain (no setTimeout = no popup blocking).
     function openAR(index) {
       if (!isMobile()) {
         showToast('📱 Abra esta página no celular para usar o AR');
         return;
       }
-
-      const p = products[index];
-
-      // Strategy: Open the 3D modal (makes model-viewer VISIBLE),
-      // load the model, then trigger activateAR().
-      // model-viewer auto-converts GLB→USDZ for iOS Quick Look.
-      pendingAR = true;
+      // Open the 3D modal (model-viewer needs to be visible)
       open3D(index);
-
-      const viewer = document.getElementById('modalViewer');
-
-      const tryAR = () => {
-        if (viewer.canActivateAR) {
-          viewer.activateAR();
-          pendingAR = false;
-        } else if (isAndroid()) {
-          // Fallback: direct Scene Viewer for Android
-          pendingAR = false;
-          const glbUrl = getAbsoluteGlbUrl(p.glb);
-          const fallbackUrl = encodeURIComponent(window.location.href);
-          const fileUrl = encodeURIComponent(glbUrl);
-          const title = encodeURIComponent(p.name);
-          const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
-          const a = document.createElement('a');
-          a.href = intentUrl;
-          a.click();
-        } else {
-          pendingAR = false;
-          showToast('🛋️ Gire o modelo com o dedo para explorar em 3D!');
-        }
-      };
-
-      // Wait for model to fully load
-      const onLoad = () => {
-        viewer.removeEventListener('load', onLoad);
-        // Give model-viewer a moment to set up AR subsystem
-        setTimeout(tryAR, 500);
-      };
-
-      // Check if model is already loaded
-      if (viewer.loaded && viewer.getAttribute('src') === p.glb) {
-        setTimeout(tryAR, 300);
-      } else {
-        viewer.addEventListener('load', onLoad);
-        // Safety timeout
-        setTimeout(() => {
-          if (pendingAR) {
-            pendingAR = false;
-            showToast('🛋️ Modelo carregado! Use o botão "Ver na sala" abaixo para AR.');
-          }
-        }, 20000);
-      }
+      showToast('👆 Modelo carregando... Toque no botão verde para ver na sua sala!');
     }
 
+    // "Ver na sala" button in modal info bar:
+    // Directly calls activateAR — this works because it's a direct user tap.
     function triggerARFromModal() {
       const viewer = document.getElementById('modalViewer');
       if (!isMobile()) {
         showToast('📱 Abra esta página no celular para usar o AR');
         return;
       }
+      // Direct call from user tap — preserves gesture chain
       if (viewer.canActivateAR) {
         viewer.activateAR();
       } else {
-        showToast('🛋️ Gire o modelo com o dedo para explorar em 3D!');
+        showToast('⏳ Aguarde o modelo carregar, depois toque no botão verde acima.');
       }
     }
 
