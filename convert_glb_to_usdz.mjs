@@ -40,10 +40,27 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
         return new Promise((resolve, reject) => {
             const loader = new GLTFLoader();
             loader.parse(arrayBuffer, '', (gltf) => {
-                // Apple AR Quick Look assumes USDZ units are Centimeters
-                // Our glTF models are correctly scaled in Meters.
-                // We must scale the root scene by 100x so 2.2m becomes 220cm.
-                gltf.scene.scale.set(100, 100, 100);
+                // Apple AR Quick Look is known to ignore or crash on root-level structural transforms
+                // when tracking strict physical bounds (#allowsContentScaling=0).
+                // We must bake all nested structural transforms directly into the mesh vertices.
+                gltf.scene.updateMatrixWorld(true);
+                gltf.scene.traverse((child) => {
+                    if (child.isMesh) {
+                        child.geometry.applyMatrix4(child.matrixWorld);
+                    }
+                });
+
+                // Reset all hierarchical transforms to prevent double-scaling in USDZ
+                gltf.scene.traverse((child) => {
+                    if (child.isObject3D) {
+                        child.position.set(0, 0, 0);
+                        child.quaternion.identity();
+                        child.scale.set(1, 1, 1);
+                        child.updateMatrix();
+                    }
+                });
+
+                gltf.scene.updateMatrixWorld(true);
 
                 const exporter = new USDZExporter();
                 exporter.parse(gltf.scene).then((usdzArrayBuffer) => {
