@@ -1,79 +1,84 @@
-/**
- * Convert GLB files to USDZ using Three.js USDZExporter.
- * Usage: node convert_glb_to_usdz.mjs <input.glb> <output.usdz>
- */
-import { readFileSync, writeFileSync, readdirSync } from 'fs';
-import { join, basename } from 'path';
-
-// Three.js imports
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
-
-// Polyfill for DOM APIs that Three.js needs in Node
-globalThis.document = {
-    createElementNS: () => ({ setAttribute: () => { }, style: {} }),
-    createElement: () => ({ getContext: () => null, style: {} }),
-};
-globalThis.window = {
-    addEventListener: () => { },
-    removeEventListener: () => { },
-    innerWidth: 1024,
-    innerHeight: 768,
-};
-globalThis.self = globalThis;
-globalThis.Image = class { };
-globalThis.navigator = { userAgent: '' };
-globalThis.HTMLCanvasElement = class { };
-
-const MODELS_DIR = process.argv[2] || 'models';
+import puppeteer from 'puppeteer';
+import fs from 'fs/promises';
+import path from 'path';
 
 async function convertGlbToUsdz(glbPath, usdzPath) {
-    const data = readFileSync(glbPath);
-    const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+    console.log(`Converting ${path.basename(glbPath)}...`);
+    const browser = await puppeteer.launch({ headless: 'new' });
+    const page = await browser.newPage();
 
-    return new Promise((resolve, reject) => {
-        const loader = new GLTFLoader();
-        loader.parse(arrayBuffer, '', async (gltf) => {
-            try {
+    const glbBuffer = await fs.readFile(glbPath);
+    const glbData = new Uint8Array(glbBuffer.buffer, glbBuffer.byteOffset, glbBuffer.byteLength);
+
+    await page.setContent(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <script type="importmap">
+                    {
+                        "imports": {
+                            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+                        }
+                    }
+                </script>
+            </head>
+            <body></body>
+        </html>
+    `);
+
+    const usdzUint8Array = await page.evaluate(async (glbDataArray) => {
+        const arrayBuffer = new Uint8Array(glbDataArray).buffer;
+
+        // Hide dynamic imports from Node.js explicit parser
+        const dynamicLoader = new Function('moduleRoot', 'return import(moduleRoot);');
+
+        const THREE = await dynamicLoader('three');
+        const { GLTFLoader } = await dynamicLoader('three/addons/loaders/GLTFLoader.js');
+        const { USDZExporter } = await dynamicLoader('three/addons/exporters/USDZExporter.js');
+
+        return new Promise((resolve, reject) => {
+            const loader = new GLTFLoader();
+            loader.parse(arrayBuffer, '', (gltf) => {
+                // Apple AR Quick Look assumes USDZ units are Centimeters
+                // Our glTF models are correctly scaled in Meters.
+                // We must scale the root scene by 100x so 2.2m becomes 220cm.
+                gltf.scene.scale.set(100, 100, 100);
+
                 const exporter = new USDZExporter();
-                const result = await exporter.parse(gltf.scene);
-                const buffer = Buffer.from(result);
-                writeFileSync(usdzPath, buffer);
-                console.log(`  ✅ ${basename(usdzPath)} (${(buffer.length / 1024 / 1024).toFixed(1)} MB)`);
-                resolve(true);
-            } catch (err) {
-                console.log(`  ❌ Export failed: ${err.message}`);
-                resolve(false);
-            }
-        }, (err) => {
-            console.log(`  ❌ Parse failed: ${err.message || err}`);
-            resolve(false);
+                exporter.parse(gltf.scene).then((usdzArrayBuffer) => {
+                    resolve(Array.from(new Uint8Array(usdzArrayBuffer)));
+                }).catch(reject);
+            }, reject);
         });
-    });
+    }, Array.from(glbData));
+
+    await fs.writeFile(usdzPath, Buffer.from(usdzUint8Array));
+    console.log(`✅ Saved ${path.basename(usdzPath)}`);
+
+    await browser.close();
 }
 
 async function main() {
-    const files = readdirSync(MODELS_DIR).filter(f => f.endsWith('.glb')).sort();
-    console.log(`📦 Converting ${files.length} GLB files to USDZ\n`);
+    try {
+        const productsJson = await fs.readFile('products_with_dims.json', 'utf8');
+        const products = JSON.parse(productsJson);
 
-    let success = 0;
-    for (let i = 0; i < files.length; i++) {
-        const glbFile = files[i];
-        const usdzFile = glbFile.replace('.glb', '.usdz');
-        const glbPath = join(MODELS_DIR, glbFile);
-        const usdzPath = join(MODELS_DIR, usdzFile);
+        for (const p of products) {
+            if (!p.glb_path) continue;
+            const glbPath = path.resolve(p.glb_path);
+            const usdzPath = glbPath.replace(/\.glb$/i, '.usdz');
 
-        const sizeMb = readFileSync(glbPath).length / 1024 / 1024;
-        console.log(`[${i + 1}/${files.length}] ${glbFile} (${sizeMb.toFixed(1)} MB)`);
-
-        if (await convertGlbToUsdz(glbPath, usdzPath)) {
-            success++;
+            try {
+                await fs.access(glbPath);
+                await convertGlbToUsdz(glbPath, usdzPath);
+            } catch (e) {
+                console.log(`Failed or skipped ${p.glb_path}: ${e.message}`);
+            }
         }
+    } catch (e) {
+        console.error("Main error:", e);
     }
-
-    console.log(`\n${'═'.repeat(50)}`);
-    console.log(`✅ ${success}/${files.length} files converted`);
 }
 
-main().catch(console.error);
+main();
