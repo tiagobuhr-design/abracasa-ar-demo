@@ -793,7 +793,8 @@
         a.setAttribute('rel', 'ar');
         const img = document.createElement('img');
         a.appendChild(img);
-        a.href = base + usdzPath;
+        // Add #allowsContentScaling=0 to strictly disable user scaling
+        a.href = base + usdzPath + '#allowsContentScaling=0';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -806,7 +807,8 @@
         const fallbackUrl = encodeURIComponent(window.location.href);
         const fileUrl = encodeURIComponent(glbUrl);
         const title = encodeURIComponent(p.name);
-        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+        // Add resizable=false to strictly disable user scaling
+        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&resizable=false&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
 
         const a = document.createElement('a');
         a.href = intentUrl;
