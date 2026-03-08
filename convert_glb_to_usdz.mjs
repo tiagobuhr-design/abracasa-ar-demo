@@ -61,6 +61,16 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
                             newScene.add(flatMesh);
                         }
                     });
+
+                    // Anchor model correctly to the floor (Y=0)
+                    const bbox = new THREE.Box3().setFromObject(newScene);
+                    const lowestY = bbox.min.y;
+
+                    newScene.traverse((child) => {
+                        if (child.isMesh) {
+                            child.geometry.translate(0, -lowestY, 0);
+                        }
+                    });
                 } catch (e) {
                     reject(e);
                     return;
