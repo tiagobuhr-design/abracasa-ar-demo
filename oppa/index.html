@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oppa Design — Experiência AR</title>
+  <meta name="description"
+    content="Demonstração exclusiva de realidade aumentada para a Oppa Design. Veja móveis na sua sala antes de comprar.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Model Viewer -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --burgundy: #FADB0F;
+      --burgundy-dark: #8a002a;
+      --burgundy-light: rgba(171, 0, 51, 0.08);
+      --white: #ffffff;
+      --light-grey: #f5f5f5;
+      --dark-grey: #222222;
+      --medium-grey: #666666;
+      --border-grey: #e0e0e0;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14);
+      --radius: 12px;
+      --transition: 0.2s ease;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark-grey);
+      background: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ─── Demo Banner ─────────────────────────────────────── */
+    .demo-banner {
+      background: var(--burgundy);
+      color: var(--white);
+      text-align: center;
+      padding: 16px 20px;
+    }
+
+    .demo-banner p {
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0.95;
+    }
+
+    .demo-banner p:first-child {
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+
+    .demo-banner p:last-child {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 6px;
+    }
+
+    /* ─── Header ──────────────────────────────────────────── */
+    .header {
+      text-align: center;
+      padding: 40px 20px 32px;
+      background: var(--white);
+    }
+
+    .header-logo { filter: grayscale(100%) contrast(100);
+      max-width: 220px;
+      margin: 0 auto 20px;
+    }
+
+    .header-tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--dark-grey);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.4;
+    }
+
+    /* ─── How It Works ────────────────────────────────────── */
+    .how-it-works {
+      background: var(--light-grey);
+      padding: 48px 20px;
+      text-align: center;
+    }
+
+    .how-it-works h2 {
+      font-size: 28px;
+      color: var(--dark-grey);
+      margin-bottom: 32px;
+    }
+
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      max-width: 600px;
+      margin: 0 auto 24px;
+      flex-wrap: wrap;
+    }
+
+    .step {
+      flex: 1;
+      min-width: 140px;
+      max-width: 180px;
+    }
+
+    .step-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .step-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark-grey);
+      line-height: 1.4;
+    }
+
+    .how-it-works .note {
+      font-size: 14px;
+      color: var(--medium-grey);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ─── Section Titles ──────────────────────────────────── */
+    .section-title {
+      text-align: center;
+      padding: 48px 20px 8px;
+    }
+
+    .section-title h2 {
+      font-size: 28px;
+      color: var(--dark-grey);
+    }
+
+    .section-title p {
+      font-size: 15px;
+      color: var(--medium-grey);
+      margin-top: 8px;
+    }
+
+    /* ─── Product Grid ────────────────────────────────────── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    @media (min-width: 768px) {
+      .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        padding: 24px 32px 64px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .product-grid {
+        padding: 32px 40px 80px;
+      }
+    }
+
+    /* ─── Product Card ────────────────────────────────────── */
+    .product-card {
+      background: var(--white);
+      border: 1px solid var(--border-grey);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: box-shadow var(--transition), transform var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .product-card-image {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--light-grey);
+    }
+
+    .product-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-card-image img {
+      transform: scale(1.04);
+    }
+
+    .product-category-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--burgundy);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .product-card-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .product-card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark-grey);
+      line-height: 1.35;
+      margin-bottom: 6px;
+      min-height: 40px;
+    }
+
+    .product-card-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--burgundy);
+      margin-bottom: 14px;
+    }
+
+    .product-card-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .btn-3d {
+      background: var(--dark-grey);
+      color: var(--white);
+    }
+
+    .btn-3d:hover {
+      background: #000;
+    }
+
+    .btn-ar {
+      background: var(--burgundy);
+      color: var(--white);
+    }
+
+    .btn-ar:hover {
+      background: var(--burgundy-dark);
+    }
+
+    @media (min-width: 768px) {
+      .product-card-name {
+        font-size: 16px;
+      }
+
+      .product-card-price {
+        font-size: 20px;
+      }
+
+      .btn {
+        font-size: 13px;
+        padding: 11px 10px;
+      }
+    }
+
+    /* ─── 3D Modal ─────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: var(--white);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition);
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .modal-viewer-container {
+      width: 100%;
+      max-width: 700px;
+      aspect-ratio: 1 / 1;
+      max-height: 60vh;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+
+    .modal-viewer-container model-viewer {
+      width: 100%;
+      height: 100%;
+    }
+
+    .modal-info {
+      text-align: center;
+      color: var(--white);
+      margin-top: 20px;
+    }
+
+    .modal-info h3 {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .modal-info .modal-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--burgundy);
+      color: #ff4d7a;
+      margin-bottom: 16px;
+    }
+
+    .modal-link {
+      display: inline-block;
+      padding: 10px 24px;
+      background: var(--white);
+      color: var(--dark-grey);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      transition: all var(--transition);
+    }
+
+    .modal-link:hover {
+      background: var(--light-grey);
+      transform: translateY(-1px);
+    }
+
+    /* ─── AR Loading Overlay ──────────────────────────────── */
+    .ar-loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .ar-loading-overlay.active {
+      display: flex;
+    }
+
+    .ar-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .modal-ar-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 24px;
+      background: var(--burgundy);
+      color: var(--white);
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all var(--transition);
+      margin-left: 12px;
+    }
+
+    .modal-ar-btn:hover {
+      background: var(--burgundy-dark);
+      transform: translateY(-1px);
+    }
+
+    /* ─── Toast ────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--dark-grey);
+      color: var(--white);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.35s ease;
+      text-align: center;
+      max-width: 90vw;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ─── Footer ───────────────────────────────────────────── */
+    .footer {
+      background: var(--dark-grey);
+      color: var(--white);
+      text-align: center;
+      padding: 56px 20px;
+    }
+
+    .footer h2 {
+      font-size: 26px;
+      margin-bottom: 24px;
+      color: var(--white);
+    }
+
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      background: #25D366;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      border-radius: 50px;
+      transition: all var(--transition);
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-whatsapp:hover {
+      background: #1fb855;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(37, 211, 102, 0.4);
+    }
+
+    .btn-whatsapp svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--white);
+    }
+
+    .footer-credit {
+      margin-top: 32px;
+      font-size: 12px;
+      opacity: 0.5;
+      line-height: 1.6;
+    }
+
+    /* ─── Scrollbar ────────────────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--light-grey);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    /* AR native slot button */
+    .ar-slot-button {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+      z-index: 10;
+      animation: arPulse 2s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    .ar-slot-button:active {
+      transform: translateX(-50%) scale(0.95);
+    }
+
+    @keyframes arPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 4px 24px rgba(34, 197, 94, 0.7);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══ DEMO BANNER ═══ -->
+  <div class="demo-banner">
+    <p>Demonstração exclusiva criada para a Oppa Design</p>
+    <p>Esta página foi desenvolvida especialmente para mostrar como a experiência AR funcionaria na sua loja</p>
+    <p>Não é um site público — criado por Tiago Buhr</p>
+  </div>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header">
+    <img src="https://www.oppa.com.br/image/logo_atelie_oppa.svg" alt="Oppa Design" class="header-logo">
+    <p class="header-tagline">Veja nossos produtos na sua sala, antes de comprar.</p>
+  </header>
+
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <section class="how-it-works">
+    <h2>Como funciona?</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-icon">📱</span>
+        <span class="step-label">Oppa no celular</span>
+      </div>
+      <div class="step">
+        <span class="step-icon">🛋️</span>
+        <span class="step-label">Escolha um produto</span>
+      </div>
+      <div class="step">
+        <span class="step-icon">🏠</span>
+        <span class="step-label">Veja na sua sala em AR</span>
+      </div>
+    </div>
+    <p class="note">Sem baixar nenhum aplicativo. Funciona direto no navegador do celular.</p>
+  </section>
+
+  <!-- ═══ PRODUCT SECTION ═══ -->
+  <div class="section-title">
+    <h2>Nossos Produtos</h2>
+    <p>Toque em "Ver em 3D" para explorar ou "Ver na sala" para usar AR</p>
+  </div>
+
+  <div class="product-grid" id="productGrid"></div>
+
+  <!-- ═══ 3D MODAL ═══ -->
+  <div class="modal-overlay" id="modalOverlay">
+    <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+    <div class="modal-viewer-container">
+      <model-viewer id="modalViewer" src="" auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
+        ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" style="width:100%;height:100%;background:#1a1a1a;">
+        <button slot="ar-button" id="arSlotBtn" class="ar-slot-button">
+          🏠 Toque para ver na sua sala
+        </button>
+      </model-viewer>
+    </div>
+    <div class="modal-info">
+      <h3 id="modalName"></h3>
+      <p class="modal-price" id="modalPrice"></p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+        <a href="#" id="modalLink" class="modal-link" target="_blank" rel="noopener">Ver no site →</a>
+        <button class="modal-ar-btn" id="modalArBtn" onclick="triggerARFromModal()">🏠 Ver na sala</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ AR LOADING OVERLAY ═══ -->
+  <div class="ar-loading-overlay" id="arLoading">
+    <div class="ar-spinner"></div>
+    <span>Carregando modelo 3D...</span>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <h2>Gostou do que viu?<br>Vamos conversar.</h2>
+    <a href="https://wa.me/5521971174398?text=Olá!%20Vi%20a%20demonstração%20AR%20dos%20produtos%20da%20Oppa%20Casa%20e%20gostaria%20de%20saber%20mais."
+      class="btn-whatsapp" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+      </svg>
+      Falar no WhatsApp
+    </a>
+    <p class="footer-credit">
+      Demonstração técnica desenvolvida por Tiago Buhr — tiagobuhr@gmail.com
+    </p>
+  </footer>
+
+  <script>
+    // ─── Product Data ──────────────────────────────────────
+    const products = [
+  {
+    "name": "Sofá 3 Lugares Biscoito Fino",
+    "price": "R$ 3.899,00",
+    "url": "https://www.oppa.com.br/products/sofa-3-lugares-biscoito-fino",
+    "image": "https://example.com/sofa1.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 210,
+      "height_cm": 82,
+      "depth_cm": 90
+    },
+    "glb_path": "../models/oppa/poltrona-com-puff-costela-caramelo.glb",
+    "usdz_path": "../models/oppa/poltrona-com-puff-costela-caramelo.usdz"
+  },
+  {
+    "name": "Sofá Modular Block Cinza Claro",
+    "price": "R$ 4.590,00",
+    "url": "https://www.oppa.com.br/products/sofa-modular-block-cinza",
+    "image": "https://example.com/sofa2.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 240,
+      "height_cm": 75,
+      "depth_cm": 110
+    },
+    "glb_path": "../models/oppa/poltrona-costela-com-puff-tent-pesto.glb",
+    "usdz_path": "../models/oppa/poltrona-costela-com-puff-tent-pesto.usdz"
+  },
+  {
+    "name": "Sofá Retrátil Cloud Off-White",
+    "price": "R$ 5.200,00",
+    "url": "https://www.oppa.com.br/products/sofa-retratil-cloud",
+    "image": "https://example.com/sofa3.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 260,
+      "height_cm": 90,
+      "depth_cm": 120
+    },
+    "glb_path": "../models/oppa/poltrona-costela-slim-com-puff-trellis-grafite.glb",
+    "usdz_path": "../models/oppa/poltrona-costela-slim-com-puff-trellis-grafite.usdz"
+  },
+  {
+    "name": "Sofá de Veludo Mid-Century Verde",
+    "price": "R$ 3.100,00",
+    "url": "https://www.oppa.com.br/products/sofa-mid-century-verde",
+    "image": "https://example.com/sofa4.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 180,
+      "height_cm": 85,
+      "depth_cm": 85
+    },
+    "glb_path": "../models/oppa/poltrona-maggiolina-com-puff-caramelo.glb",
+    "usdz_path": "../models/oppa/poltrona-maggiolina-com-puff-caramelo.usdz"
+  },
+  {
+    "name": "Poltrona Costela com Puff",
+    "price": "R$ 2.450,00",
+    "url": "https://www.oppa.com.br/products/poltrona-costela-com-puff",
+    "image": "https://example.com/poltrona1.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 70,
+      "height_cm": 90,
+      "depth_cm": 110
+    },
+    "glb_path": "../models/oppa/sofa-flip-silver-trama-larga-cinza-mesclado.glb",
+    "usdz_path": "../models/oppa/sofa-flip-silver-trama-larga-cinza-mesclado.usdz"
+  },
+  {
+    "name": "Poltrona Charles Eames Branca",
+    "price": "R$ 3.800,00",
+    "url": "https://www.oppa.com.br/products/poltrona-charles-eames",
+    "image": "https://example.com/poltrona2.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 85,
+      "height_cm": 84,
+      "depth_cm": 85
+    },
+    "glb_path": "../models/oppa/sofa-giro-botone-tijolo.glb",
+    "usdz_path": "../models/oppa/sofa-giro-botone-tijolo.usdz"
+  },
+  {
+    "name": "Poltrona Giratória Pétala Rosé",
+    "price": "R$ 1.690,00",
+    "url": "https://www.oppa.com.br/products/poltrona-petala",
+    "image": "https://example.com/poltrona3.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 75,
+      "height_cm": 80,
+      "depth_cm": 75
+    },
+    "glb_path": "../models/oppa/sofa-giro-trento-verde-pesto.glb",
+    "usdz_path": "../models/oppa/sofa-giro-trento-verde-pesto.usdz"
+  },
+  {
+    "name": "Poltrona de Leitura Oslo Mostarda",
+    "price": "R$ 1.250,00",
+    "url": "https://www.oppa.com.br/products/poltrona-oslo",
+    "image": "https://example.com/poltrona4.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 68,
+      "height_cm": 95,
+      "depth_cm": 80
+    },
+    "glb_path": "../models/oppa/sofa-noah-trento-verde-pesto.glb",
+    "usdz_path": "../models/oppa/sofa-noah-trento-verde-pesto.usdz"
+  }
+];
+
+    // ─── Render Product Grid ───────────────────────────────
+    const grid = document.getElementById('productGrid');
+
+    grid.innerHTML = products.map((p, i) => `
+      <div class="product-card" id="card-${i}">
+        <div class="product-card-image">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <span class="product-category-tag">${p.category === 'poltrona' ? 'Poltrona' : 'Sofá'}</span>
+        </div>
+        <div class="product-card-body">
+          <h3 class="product-card-name">${p.name}</h3>
+          <p class="product-card-price">${p.price}</p>
+          <div class="product-card-buttons">
+            <button class="btn btn-3d" onclick="open3D(${i})">Ver em 3D</button>
+            <button class="btn btn-ar" onclick="openAR(${i})">Ver na sala 🏠</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // ─── 3D Modal ──────────────────────────────────────────
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalViewer = document.getElementById('modalViewer');
+    const modalName = document.getElementById('modalName');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalLink = document.getElementById('modalLink');
+    const modalClose = document.getElementById('modalClose');
+
+    function open3D(index) {
+      const p = products[index];
+      modalViewer.setAttribute('src', p.glb);
+      if (p.usdz_path) {
+        modalViewer.setAttribute('ios-src', p.usdz_path);
+      } else {
+        modalViewer.removeAttribute('ios-src');
+      }
+      modalName.textContent = p.name;
+      modalPrice.textContent = p.price;
+      modalLink.href = p.url;
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close3D() {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      // Delay clearing src to avoid visual glitch
+      setTimeout(() => modalViewer.setAttribute('src', ''), 300);
+    }
+
+    modalClose.addEventListener('click', close3D);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) close3D();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close3D();
+    });
+
+    // ─── AR Mode ───────────────────────────────────────────
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+
+    // Direct OS-level AR intents (bypassing model-viewer for instant launch)
+    function openAR(index) {
+      if (!isMobile()) {
+        showToast('📱 Oppa esta página no celular para usar o AR');
+        return;
+      }
+
+      const p = products[index];
+      const base = window.location.href.split('?')[0].replace(/\/[^\/]*$/, '/');
+
+      // iOS: Apple AR Quick Look
+      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        const usdzPath = p.glb.replace(/\.glb$/i, '.usdz');
+        const a = document.createElement('a');
+        a.setAttribute('rel', 'ar');
+        const img = document.createElement('img');
+        a.appendChild(img);
+        // Add #allowsContentScaling=0 to strictly disable user scaling
+        a.href = base + usdzPath + '#allowsContentScaling=0';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+
+      // Android: Google Scene Viewer
+      if (/Android/i.test(navigator.userAgent)) {
+        const glbUrl = base + p.glb;
+        const fallbackUrl = encodeURIComponent(window.location.href);
+        const fileUrl = encodeURIComponent(glbUrl);
+        const title = encodeURIComponent(p.name);
+        // Add resizable=false to strictly disable user scaling
+        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&resizable=false&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+
+        const a = document.createElement('a');
+        a.href = intentUrl;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+    }
+
+    function triggerARFromModal(index) {
+      openAR(index);
+    }
+
+    // ─── Toast ─────────────────────────────────────────────
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+
+</body>
+
+</html>

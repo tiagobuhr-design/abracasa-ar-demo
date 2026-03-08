@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Sofá 3 Lugares Biscoito Fino",
+    "price": "R$ 3.899,00",
+    "url": "https://www.oppa.com.br/products/sofa-3-lugares-biscoito-fino",
+    "image": "https://example.com/sofa1.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 210,
+      "height_cm": 82,
+      "depth_cm": 90
+    },
+    "glb_path": "models/oppa/poltrona-com-puff-costela-caramelo.glb",
+    "usdz_path": "models/oppa/poltrona-com-puff-costela-caramelo.usdz"
+  },
+  {
+    "name": "Sofá Modular Block Cinza Claro",
+    "price": "R$ 4.590,00",
+    "url": "https://www.oppa.com.br/products/sofa-modular-block-cinza",
+    "image": "https://example.com/sofa2.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 240,
+      "height_cm": 75,
+      "depth_cm": 110
+    },
+    "glb_path": "models/oppa/poltrona-costela-com-puff-tent-pesto.glb",
+    "usdz_path": "models/oppa/poltrona-costela-com-puff-tent-pesto.usdz"
+  },
+  {
+    "name": "Sofá Retrátil Cloud Off-White",
+    "price": "R$ 5.200,00",
+    "url": "https://www.oppa.com.br/products/sofa-retratil-cloud",
+    "image": "https://example.com/sofa3.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 260,
+      "height_cm": 90,
+      "depth_cm": 120
+    },
+    "glb_path": "models/oppa/poltrona-costela-slim-com-puff-trellis-grafite.glb",
+    "usdz_path": "models/oppa/poltrona-costela-slim-com-puff-trellis-grafite.usdz"
+  },
+  {
+    "name": "Sofá de Veludo Mid-Century Verde",
+    "price": "R$ 3.100,00",
+    "url": "https://www.oppa.com.br/products/sofa-mid-century-verde",
+    "image": "https://example.com/sofa4.jpg",
+    "category": "sofa",
+    "dimensions": {
+      "width_cm": 180,
+      "height_cm": 85,
+      "depth_cm": 85
+    },
+    "glb_path": "models/oppa/poltrona-maggiolina-com-puff-caramelo.glb",
+    "usdz_path": "models/oppa/poltrona-maggiolina-com-puff-caramelo.usdz"
+  },
+  {
+    "name": "Poltrona Costela com Puff",
+    "price": "R$ 2.450,00",
+    "url": "https://www.oppa.com.br/products/poltrona-costela-com-puff",
+    "image": "https://example.com/poltrona1.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 70,
+      "height_cm": 90,
+      "depth_cm": 110
+    },
+    "glb_path": "models/oppa/sofa-flip-silver-trama-larga-cinza-mesclado.glb",
+    "usdz_path": "models/oppa/sofa-flip-silver-trama-larga-cinza-mesclado.usdz"
+  },
+  {
+    "name": "Poltrona Charles Eames Branca",
+    "price": "R$ 3.800,00",
+    "url": "https://www.oppa.com.br/products/poltrona-charles-eames",
+    "image": "https://example.com/poltrona2.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 85,
+      "height_cm": 84,
+      "depth_cm": 85
+    },
+    "glb_path": "models/oppa/sofa-giro-botone-tijolo.glb",
+    "usdz_path": "models/oppa/sofa-giro-botone-tijolo.usdz"
+  },
+  {
+    "name": "Poltrona Giratória Pétala Rosé",
+    "price": "R$ 1.690,00",
+    "url": "https://www.oppa.com.br/products/poltrona-petala",
+    "image": "https://example.com/poltrona3.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 75,
+      "height_cm": 80,
+      "depth_cm": 75
+    },
+    "glb_path": "models/oppa/sofa-giro-trento-verde-pesto.glb",
+    "usdz_path": "models/oppa/sofa-giro-trento-verde-pesto.usdz"
+  },
+  {
+    "name": "Poltrona de Leitura Oslo Mostarda",
+    "price": "R$ 1.250,00",
+    "url": "https://www.oppa.com.br/products/poltrona-oslo",
+    "image": "https://example.com/poltrona4.jpg",
+    "category": "poltrona",
+    "dimensions": {
+      "width_cm": 68,
+      "height_cm": 95,
+      "depth_cm": 80
+    },
+    "glb_path": "models/oppa/sofa-noah-trento-verde-pesto.glb",
+    "usdz_path": "models/oppa/sofa-noah-trento-verde-pesto.usdz"
+  }
+]
