@@ -29,8 +29,6 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
 
     const usdzUint8Array = await page.evaluate(async (glbDataArray) => {
         const arrayBuffer = new Uint8Array(glbDataArray).buffer;
-
-        // Hide dynamic imports from Node.js explicit parser
         const dynamicLoader = new Function('moduleRoot', 'return import(moduleRoot);');
 
         const THREE = await dynamicLoader('three');
@@ -40,30 +38,36 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
         return new Promise((resolve, reject) => {
             const loader = new GLTFLoader();
             loader.parse(arrayBuffer, '', (gltf) => {
-                // Apple AR Quick Look is known to ignore or crash on root-level structural transforms
-                // when tracking strict physical bounds (#allowsContentScaling=0).
-                // We must bake all nested structural transforms directly into the mesh vertices.
-                gltf.scene.updateMatrixWorld(true);
-                gltf.scene.traverse((child) => {
-                    if (child.isMesh) {
-                        child.geometry.applyMatrix4(child.matrixWorld);
-                    }
-                });
+                const newScene = new THREE.Scene();
 
-                // Reset all hierarchical transforms to prevent double-scaling in USDZ
-                gltf.scene.traverse((child) => {
-                    if (child.isObject3D) {
-                        child.position.set(0, 0, 0);
-                        child.quaternion.identity();
-                        child.scale.set(1, 1, 1);
-                        child.updateMatrix();
-                    }
-                });
+                try {
+                    gltf.scene.updateMatrixWorld(true);
+                    const m100 = new THREE.Matrix4().makeScale(100, 100, 100);
 
-                gltf.scene.updateMatrixWorld(true);
+                    gltf.scene.traverse((child) => {
+                        if (child.isMesh) {
+                            const worldMatrix = child.matrixWorld.clone();
+                            worldMatrix.premultiply(m100);
+
+                            const newGeometry = child.geometry.clone();
+                            newGeometry.applyMatrix4(worldMatrix);
+
+                            const flatMesh = new THREE.Mesh(newGeometry, child.material);
+                            flatMesh.position.set(0, 0, 0);
+                            flatMesh.quaternion.identity();
+                            flatMesh.scale.set(1, 1, 1);
+                            flatMesh.updateMatrix();
+
+                            newScene.add(flatMesh);
+                        }
+                    });
+                } catch (e) {
+                    reject(e);
+                    return;
+                }
 
                 const exporter = new USDZExporter();
-                exporter.parse(gltf.scene).then((usdzArrayBuffer) => {
+                exporter.parse(newScene).then((usdzArrayBuffer) => {
                     resolve(Array.from(new Uint8Array(usdzArrayBuffer)));
                 }).catch(reject);
             }, reject);
