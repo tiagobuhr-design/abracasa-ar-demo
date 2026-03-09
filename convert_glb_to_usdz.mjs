@@ -41,13 +41,18 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
                 const newScene = new THREE.Scene();
 
                 try {
+                    // Apple AR Quick Look frequently drops/ignores root structural scale matrices 
+                    // when #allowsContentScaling=0 is enforced, causing the model to revert
+                    // to its tiny unscaled original size.
+                    // We bypass this entirely by baking the exact calculated physical world-space
+                    // matrices directly into the mesh vertices, flattening all scales.
+                    // The scale is already correctly calculated in meters.
+
                     gltf.scene.updateMatrixWorld(true);
-                    const m100 = new THREE.Matrix4().makeScale(100, 100, 100);
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
                             const worldMatrix = child.matrixWorld.clone();
-                            worldMatrix.premultiply(m100);
 
                             const newGeometry = child.geometry.clone();
                             newGeometry.applyMatrix4(worldMatrix);
