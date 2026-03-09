@@ -49,13 +49,17 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
                     // The scale is already correctly calculated in meters.
 
                     gltf.scene.updateMatrixWorld(true);
+                    const m100 = new THREE.Matrix4().makeScale(100, 100, 100);
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
                             const worldMatrix = child.matrixWorld.clone();
+                            worldMatrix.premultiply(m100);
 
                             const newGeometry = child.geometry.clone();
                             newGeometry.applyMatrix4(worldMatrix);
+                            newGeometry.computeBoundingBox();
+                            newGeometry.computeBoundingSphere();
 
                             const flatMesh = new THREE.Mesh(newGeometry, child.material);
                             flatMesh.position.set(0, 0, 0);
@@ -73,7 +77,8 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
 
                     newScene.traverse((child) => {
                         if (child.isMesh) {
-                            child.geometry.translate(0, -lowestY, 0);
+                            child.position.y = -lowestY;
+                            child.updateMatrix();
                         }
                     });
                 } catch (e) {
@@ -97,6 +102,22 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
 
 async function main() {
     try {
+        const args = process.argv.slice(2);
+        if (args.length > 0) {
+            for (const argPath of args) {
+                const glbPath = path.resolve(argPath);
+                const usdzPath = glbPath.replace(/\.glb$/i, '.usdz');
+                try {
+                    await fs.access(glbPath);
+                    console.log(`Converting single file ${path.basename(glbPath)}...`);
+                    await convertGlbToUsdz(glbPath, usdzPath);
+                } catch (e) {
+                    console.log(`Failed or skipped ${argPath}: ${e.message}`);
+                }
+            }
+            return;
+        }
+
         const productsJson = await fs.readFile('products_with_dims.json', 'utf8');
         const products = JSON.parse(productsJson);
 
