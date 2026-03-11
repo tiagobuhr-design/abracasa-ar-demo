@@ -1,136 +1,79 @@
-import puppeteer from 'puppeteer';
-import fs from 'fs/promises';
-import path from 'path';
+/**
+ * Convert GLB files to USDZ using Three.js USDZExporter.
+ * Usage: node convert_glb_to_usdz.mjs <input.glb> <output.usdz>
+ */
+import { readFileSync, writeFileSync, readdirSync } from 'fs';
+import { join, basename } from 'path';
+
+// Three.js imports
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
+
+// Polyfill for DOM APIs that Three.js needs in Node
+globalThis.document = {
+    createElementNS: () => ({ setAttribute: () => { }, style: {} }),
+    createElement: () => ({ getContext: () => null, style: {} }),
+};
+globalThis.window = {
+    addEventListener: () => { },
+    removeEventListener: () => { },
+    innerWidth: 1024,
+    innerHeight: 768,
+};
+globalThis.self = globalThis;
+globalThis.Image = class { };
+globalThis.navigator = { userAgent: '' };
+globalThis.HTMLCanvasElement = class { };
+
+const MODELS_DIR = process.argv[2] || 'models';
 
 async function convertGlbToUsdz(glbPath, usdzPath) {
-    console.log(`Converting ${path.basename(glbPath)}...`);
-    const browser = await puppeteer.launch({ headless: 'new' });
-    const page = await browser.newPage();
+    const data = readFileSync(glbPath);
+    const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
 
-    const glbBuffer = await fs.readFile(glbPath);
-    const glbData = new Uint8Array(glbBuffer.buffer, glbBuffer.byteOffset, glbBuffer.byteLength);
-
-    await page.setContent(`
-        <!DOCTYPE html>
-        <html>
-            <head>
-                <script type="importmap">
-                    {
-                        "imports": {
-                            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-                        }
-                    }
-                </script>
-            </head>
-            <body></body>
-        </html>
-    `);
-
-    const usdzUint8Array = await page.evaluate(async (glbDataArray) => {
-        const arrayBuffer = new Uint8Array(glbDataArray).buffer;
-        const dynamicLoader = new Function('moduleRoot', 'return import(moduleRoot);');
-
-        const THREE = await dynamicLoader('three');
-        const { GLTFLoader } = await dynamicLoader('three/addons/loaders/GLTFLoader.js');
-        const { USDZExporter } = await dynamicLoader('three/addons/exporters/USDZExporter.js');
-
-        return new Promise((resolve, reject) => {
-            const loader = new GLTFLoader();
-            loader.parse(arrayBuffer, '', (gltf) => {
-                const newScene = new THREE.Scene();
-
-                try {
-                    // Apple AR Quick Look frequently drops/ignores root structural scale matrices 
-                    // when #allowsContentScaling=0 is enforced, causing the model to revert
-                    // to its tiny unscaled original size.
-                    // We bypass this entirely by baking the exact calculated physical world-space
-                    // matrices directly into the mesh vertices, flattening all scales.
-                    // The scale is already correctly calculated in meters.
-
-                    gltf.scene.updateMatrixWorld(true);
-
-                    gltf.scene.traverse((child) => {
-                        if (child.isMesh) {
-                            const worldMatrix = child.matrixWorld.clone();
-
-                            const newGeometry = child.geometry.clone();
-                            newGeometry.applyMatrix4(worldMatrix);
-
-                            const flatMesh = new THREE.Mesh(newGeometry, child.material);
-                            flatMesh.position.set(0, 0, 0);
-                            flatMesh.quaternion.identity();
-                            flatMesh.scale.set(1, 1, 1);
-                            flatMesh.updateMatrix();
-
-                            newScene.add(flatMesh);
-                        }
-                    });
-
-                    // Anchor model correctly to the floor (Y=0)
-                    const bbox = new THREE.Box3().setFromObject(newScene);
-                    const lowestY = bbox.min.y;
-
-                    newScene.traverse((child) => {
-                        if (child.isMesh) {
-                            child.geometry.translate(0, -lowestY, 0);
-                        }
-                    });
-                } catch (e) {
-                    reject(e);
-                    return;
-                }
-
+    return new Promise((resolve, reject) => {
+        const loader = new GLTFLoader();
+        loader.parse(arrayBuffer, '', async (gltf) => {
+            try {
                 const exporter = new USDZExporter();
-                exporter.parse(newScene).then((usdzArrayBuffer) => {
-                    resolve(Array.from(new Uint8Array(usdzArrayBuffer)));
-                }).catch(reject);
-            }, reject);
+                const result = await exporter.parse(gltf.scene);
+                const buffer = Buffer.from(result);
+                writeFileSync(usdzPath, buffer);
+                console.log(`  ✅ ${basename(usdzPath)} (${(buffer.length / 1024 / 1024).toFixed(1)} MB)`);
+                resolve(true);
+            } catch (err) {
+                console.log(`  ❌ Export failed: ${err.message}`);
+                resolve(false);
+            }
+        }, (err) => {
+            console.log(`  ❌ Parse failed: ${err.message || err}`);
+            resolve(false);
         });
-    }, Array.from(glbData));
-
-    await fs.writeFile(usdzPath, Buffer.from(usdzUint8Array));
-    console.log(`✅ Saved ${path.basename(usdzPath)}`);
-
-    await browser.close();
+    });
 }
 
 async function main() {
-    try {
-        const args = process.argv.slice(2);
-        if (args.length > 0) {
-            for (const argPath of args) {
-                const glbPath = path.resolve(argPath);
-                const usdzPath = glbPath.replace(/\.glb$/i, '.usdz');
-                try {
-                    await fs.access(glbPath);
-                    console.log(`Converting single file ${path.basename(glbPath)}...`);
-                    await convertGlbToUsdz(glbPath, usdzPath);
-                } catch (e) {
-                    console.log(`Failed or skipped ${argPath}: ${e.message}`);
-                }
-            }
-            return;
+    const files = readdirSync(MODELS_DIR).filter(f => f.endsWith('.glb')).sort();
+    console.log(`📦 Converting ${files.length} GLB files to USDZ\n`);
+
+    let success = 0;
+    for (let i = 0; i < files.length; i++) {
+        const glbFile = files[i];
+        const usdzFile = glbFile.replace('.glb', '.usdz');
+        const glbPath = join(MODELS_DIR, glbFile);
+        const usdzPath = join(MODELS_DIR, usdzFile);
+
+        const sizeMb = readFileSync(glbPath).length / 1024 / 1024;
+        console.log(`[${i + 1}/${files.length}] ${glbFile} (${sizeMb.toFixed(1)} MB)`);
+
+        if (await convertGlbToUsdz(glbPath, usdzPath)) {
+            success++;
         }
-
-        const productsJson = await fs.readFile('products_with_dims.json', 'utf8');
-        const products = JSON.parse(productsJson);
-
-        for (const p of products) {
-            if (!p.glb_path) continue;
-            const glbPath = path.resolve(p.glb_path);
-            const usdzPath = glbPath.replace(/\.glb$/i, '.usdz');
-
-            try {
-                await fs.access(glbPath);
-                await convertGlbToUsdz(glbPath, usdzPath);
-            } catch (e) {
-                console.log(`Failed or skipped ${p.glb_path}: ${e.message}`);
-            }
-        }
-    } catch (e) {
-        console.error("Main error:", e);
     }
+
+    console.log(`\n${'═'.repeat(50)}`);
+    console.log(`✅ ${success}/${files.length} files converted`);
 }
 
-main();
+main().catch(console.error);
