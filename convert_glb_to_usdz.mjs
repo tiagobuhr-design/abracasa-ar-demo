@@ -49,17 +49,13 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
                     // The scale is already correctly calculated in meters.
 
                     gltf.scene.updateMatrixWorld(true);
-                    const m100 = new THREE.Matrix4().makeScale(100, 100, 100);
 
                     gltf.scene.traverse((child) => {
                         if (child.isMesh) {
                             const worldMatrix = child.matrixWorld.clone();
-                            worldMatrix.premultiply(m100);
 
                             const newGeometry = child.geometry.clone();
                             newGeometry.applyMatrix4(worldMatrix);
-                            newGeometry.computeBoundingBox();
-                            newGeometry.computeBoundingSphere();
 
                             const flatMesh = new THREE.Mesh(newGeometry, child.material);
                             flatMesh.position.set(0, 0, 0);
@@ -77,8 +73,7 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
 
                     newScene.traverse((child) => {
                         if (child.isMesh) {
-                            child.position.y = -lowestY;
-                            child.updateMatrix();
+                            child.geometry.translate(0, -lowestY, 0);
                         }
                     });
                 } catch (e) {
