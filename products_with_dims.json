@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Poltrona Costela Slim com Puff - Trellis Grafite",
+    "price": "R$ 1.499,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/201950/poltrona-costela-com-puff-slim-trellis-grafite.jpg?v=638820744169070000",
+    "product_url": "https://www.abracasa.com.br/poltrona-costela-com-puff-slim-trellis-grafite/p?skuId=2009072",
+    "category": "poltrona",
+    "slug": "poltrona-costela-slim-com-puff-trellis-grafite",
+    "glb_path": "models/poltrona-costela-slim-com-puff-trellis-grafite.glb",
+    "usdz_path": "models/poltrona-costela-slim-com-puff-trellis-grafite.usdz",
+    "dimensions": {
+      "height_cm": 79.0,
+      "width_cm": 66.0,
+      "depth_cm": 89.0
+    }
+  },
+  {
+    "name": "Poltrona Maggiolina com Puff - Caramelo",
+    "price": "R$ 3.798,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/220896/IMG_6738-1000x1000.jpg?v=639020914485370000",
+    "product_url": "https://www.abracasa.com.br/poltrona-maggiolina-com-puff---caramelo/p?skuId=2008732",
+    "category": "poltrona",
+    "slug": "poltrona-maggiolina-com-puff-caramelo",
+    "glb_path": "models/poltrona-maggiolina-com-puff-caramelo.glb",
+    "usdz_path": "models/poltrona-maggiolina-com-puff-caramelo.usdz",
+    "dimensions": {
+      "height_cm": 85.0,
+      "width_cm": 85.0,
+      "depth_cm": 110.0
+    }
+  },
+  {
+    "name": "Poltrona com Puff Costela - Caramelo",
+    "price": "R$ 1.999,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202006/2021_PoltronaCostelaCaramelo.jpg?v=638821365945070000",
+    "product_url": "https://www.abracasa.com.br/poltrona-costela-com-puff-caramelo/p?skuId=2006592",
+    "category": "poltrona",
+    "slug": "poltrona-com-puff-costela-caramelo",
+    "glb_path": "models/poltrona-com-puff-costela-caramelo.glb",
+    "usdz_path": "models/poltrona-com-puff-costela-caramelo.usdz",
+    "dimensions": {
+      "height_cm": 79.0,
+      "width_cm": 66.0,
+      "depth_cm": 89.0
+    }
+  },
+  {
+    "name": "Poltrona Costela com Puff Tent Pesto",
+    "price": "R$ 1.999,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/215184/xg2.jpg?v=638936346739230000",
+    "product_url": "https://www.abracasa.com.br/poltrona-costela-com-puff-tent-pesto/p?skuId=2012451",
+    "category": "poltrona",
+    "slug": "poltrona-costela-com-puff-tent-pesto",
+    "glb_path": "models/poltrona-costela-com-puff-tent-pesto.glb",
+    "usdz_path": "models/poltrona-costela-com-puff-tent-pesto.usdz",
+    "dimensions": {
+      "height_cm": 81.0,
+      "width_cm": 66.0,
+      "depth_cm": 90.0
+    }
+  },
+  {
+    "name": "Sofá Noah Trento Verde Pesto",
+    "price": "R$ 2.999,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202773/Shooting-02-07-163_HQ_1000x1000.jpg?v=638823085093830000",
+    "product_url": "https://www.abracasa.com.br/sofa-noah-trento-verde-pesto/p?skuId=2010602",
+    "category": "sofa",
+    "slug": "sofa-noah-trento-verde-pesto",
+    "glb_path": "models/sofa-noah-trento-verde-pesto.glb",
+    "usdz_path": "models/sofa-noah-trento-verde-pesto.usdz",
+    "dimensions": {
+      "height_cm": 86.0,
+      "width_cm": 220.0,
+      "depth_cm": 88.0
+    }
+  },
+  {
+    "name": "Sofá Giro Trento Verde Pesto",
+    "price": "R$ 3.699,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/221728/sofa-diagonal.jpg?v=639047035446670000",
+    "product_url": "https://www.abracasa.com.br/sofa-giro-trento-verde-pesto/p?skuId=2010776",
+    "category": "sofa",
+    "slug": "sofa-giro-trento-verde-pesto",
+    "glb_path": "models/sofa-giro-trento-verde-pesto.glb",
+    "usdz_path": "models/sofa-giro-trento-verde-pesto.usdz",
+    "dimensions": {
+      "height_cm": 83.0,
+      "width_cm": 212.0,
+      "depth_cm": 94.0
+    }
+  },
+  {
+    "name": "Sofá Giro Botonê Tijolo",
+    "price": "R$ 3.599,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/206388/xg1.jpg?v=638847327186500000",
+    "product_url": "https://www.abracasa.com.br/sofa-giro-botone-tijolo/p?skuId=2010609",
+    "category": "sofa",
+    "slug": "sofa-giro-botone-tijolo",
+    "glb_path": "models/sofa-giro-botone-tijolo.glb",
+    "usdz_path": "models/sofa-giro-botone-tijolo.usdz",
+    "dimensions": {
+      "height_cm": 83.0,
+      "width_cm": 212.0,
+      "depth_cm": 94.0
+    }
+  },
+  {
+    "name": "Sofá Flip Silver Trama Larga Cinza Mesclado",
+    "price": "R$ 2.368,88",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/206938/sofa-flip-silver-trama-larga-cinza-mesclado-170-diagonal.jpg?v=638851618760730000",
+    "product_url": "https://www.abracasa.com.br/sofa-flip-silver-trama-larga-cinza-mesclado/p?skuId=2008102",
+    "category": "sofa",
+    "slug": "sofa-flip-silver-trama-larga-cinza-mesclado",
+    "glb_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb",
+    "usdz_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.usdz",
+    "dimensions": {
+      "height_cm": 84.0,
+      "width_cm": 170.0,
+      "depth_cm": 87.0
+    }
+  }
+]
