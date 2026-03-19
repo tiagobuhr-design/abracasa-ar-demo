@@ -118,5 +118,35 @@
       "width_cm": 170.0,
       "depth_cm": 87.0
     }
+  },
+  {
+    "name": "Cômoda Elfe 4 Gavetas e 1 Porta",
+    "price": "R$ 1.069,80",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202157/comoda-elfe-4-gavetas-branca-e-savana-diagonal.jpg?v=638820756770670000",
+    "product_url": "https://www.abracasa.com.br/comoda-elfe-4gavetas-porta-com-pes-square/p?skuId=2010236",
+    "category": "comoda",
+    "slug": "comoda-elfe-4-gavetas-e-1-porta",
+    "glb_path": "models/comoda-elfe-4-gavetas-e-1-porta.glb",
+    "usdz_path": "models/comoda-elfe-4-gavetas-e-1-porta.usdz",
+    "dimensions": {
+      "height_cm": 97.0,
+      "width_cm": 135.0,
+      "depth_cm": 45.0
+    }
+  },
+  {
+    "name": "Escrivaninha Nori Natural - 1,85m",
+    "price": "R$ 2.798,80",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/215357/escrivaninha-nori-natural-diagonal.jpg?v=638936354452030000",
+    "product_url": "https://www.abracasa.com.br/escrivaninha-nori-natural---1-85m/p?skuId=2012375",
+    "category": "escrivaninha",
+    "slug": "escrivaninha-nori-natural-1-85m",
+    "glb_path": "models/escrivaninha-nori-natural-1-85m.glb",
+    "usdz_path": "models/escrivaninha-nori-natural-1-85m.usdz",
+    "dimensions": {
+      "height_cm": 75.0,
+      "width_cm": 185.0,
+      "depth_cm": 60.0
+    }
   }
 ]

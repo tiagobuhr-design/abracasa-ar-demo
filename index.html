@@ -775,7 +775,9 @@
       { name: "Sofá Noah Trento Verde Pesto", price: "R$ 2.999,88", category: "sofa", slug: "sofa-noah-trento-verde-pesto", glb: "models/sofa-noah-trento-verde-pesto.glb", usdz: "models/sofa-noah-trento-verde-pesto.usdz", url: "https://www.abracasa.com.br/sofa-noah-trento-verde-pesto/p?skuId=2010602", image: "https://abracasa.vteximg.com.br/arquivos/ids/202773/Shooting-02-07-163_HQ_1000x1000.jpg?v=638823085093830000" },
       { name: "Sofá Giro Trento Verde Pesto", price: "R$ 3.699,88", category: "sofa", slug: "sofa-giro-trento-verde-pesto", glb: "models/sofa-giro-trento-verde-pesto.glb", usdz: "models/sofa-giro-trento-verde-pesto.usdz", url: "https://www.abracasa.com.br/sofa-giro-trento-verde-pesto/p?skuId=2010776", image: "https://abracasa.vteximg.com.br/arquivos/ids/221728/sofa-diagonal.jpg?v=639047035446670000" },
       { name: "Sofá Giro Botonê Tijolo", price: "R$ 3.599,88", category: "sofa", slug: "sofa-giro-botone-tijolo", glb: "models/sofa-giro-botone-tijolo.glb", usdz: "models/sofa-giro-botone-tijolo.usdz", url: "https://www.abracasa.com.br/sofa-giro-botone-tijolo/p?skuId=2010609", image: "https://abracasa.vteximg.com.br/arquivos/ids/206388/xg1.jpg?v=638847327186500000" },
-      { name: "Sofá Flip Silver Cinza Mesclado", price: "R$ 2.368,88", category: "sofa", slug: "sofa-flip-silver-trama-larga-cinza-mesclado", glb: "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb", usdz: "models/sofa-flip-silver-trama-larga-cinza-mesclado.usdz", url: "https://www.abracasa.com.br/sofa-flip-silver-trama-larga-cinza-mesclado/p?skuId=2008102", image: "https://abracasa.vteximg.com.br/arquivos/ids/206938/sofa-flip-silver-trama-larga-cinza-mesclado-170-diagonal.jpg?v=638851618760730000" }
+      { name: "Sofá Flip Silver Cinza Mesclado", price: "R$ 2.368,88", category: "sofa", slug: "sofa-flip-silver-trama-larga-cinza-mesclado", glb: "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb", usdz: "models/sofa-flip-silver-trama-larga-cinza-mesclado.usdz", url: "https://www.abracasa.com.br/sofa-flip-silver-trama-larga-cinza-mesclado/p?skuId=2008102", image: "https://abracasa.vteximg.com.br/arquivos/ids/206938/sofa-flip-silver-trama-larga-cinza-mesclado-170-diagonal.jpg?v=638851618760730000" },
+      { name: "Cômoda Elfe 4 Gavetas", price: "R$ 1.069,80", category: "comoda", slug: "comoda-elfe-4-gavetas-e-1-porta", glb: "models/comoda-elfe-4-gavetas-e-1-porta.glb", usdz: "models/comoda-elfe-4-gavetas-e-1-porta.usdz", url: "https://www.abracasa.com.br/comoda-elfe-4gavetas-porta-com-pes-square/p?skuId=2010236", image: "https://abracasa.vteximg.com.br/arquivos/ids/202157/comoda-elfe-4-gavetas-branca-e-savana-diagonal.jpg?v=638820756770670000" },
+      { name: "Escrivaninha Nori Natural", price: "R$ 2.798,80", category: "escrivaninha", slug: "escrivaninha-nori-natural-1-85m", glb: "models/escrivaninha-nori-natural-1-85m.glb", usdz: "models/escrivaninha-nori-natural-1-85m.usdz", url: "https://www.abracasa.com.br/escrivaninha-nori-natural---1-85m/p?skuId=2012375", image: "https://abracasa.vteximg.com.br/arquivos/ids/215357/escrivaninha-nori-natural-diagonal.jpg?v=638936354452030000" }
     ];
 
     // ─── Render Product Grid ───────────────────────────────
@@ -785,7 +787,7 @@
       <div class="product-card" id="card-${i}">
         <div class="product-card-image">
           <img src="${p.image}" alt="${p.name}" loading="lazy">
-          <span class="product-category-tag">${p.category === 'poltrona' ? 'Poltrona' : 'Sofá'}</span>
+          <span class="product-category-tag">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
         </div>
         <div class="product-card-body">
           <h3 class="product-card-name">${p.name}</h3>
@@ -886,8 +888,11 @@
         a.setAttribute('rel', 'ar');
         const img = document.createElement('img');
         a.appendChild(img);
-        // Add #allowsContentScaling=0 to strictly disable user scaling
-        a.href = base + usdzPath + '#allowsContentScaling=0';
+        // Add aggressive scaling lock flags to URL fragment
+        // #allowsContentScaling=0 is the standard for iOS 13+
+        // Add duplicate flags to ensure it works across different iOS versions
+        const flags = '#allowsContentScaling=0&allowsContentScaling=no&allowScalable=0';
+        a.href = base + usdzPath + flags;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

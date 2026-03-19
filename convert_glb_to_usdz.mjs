@@ -104,9 +104,14 @@ async function convertGlbToUsdz(glbPath, usdzPath) {
                     const lowestY = bbox.min.y;
                     diagnostics.lowestY = lowestY;
 
+                    // Step 4: Glue to floor
+                    // We add a small negative offset (1.5cm) to 'push' the model into the floor,
+                    // which prevents the visual floating effect common with AR shadow planes.
+                    const glueOffset = 0.015; 
+
                     newScene.traverse((child) => {
                         if (child.isMesh) {
-                            child.geometry.translate(0, -lowestY, 0);
+                            child.geometry.translate(0, -lowestY - glueOffset, 0);
                         }
                     });
 
