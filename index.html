@@ -831,7 +831,9 @@
       
       // Handle iOS USDZ source
       const usdzPath = p.usdz || p.glb.replace(/\.glb$/i, '.usdz');
-      modalViewer.setAttribute('ios-src', usdzPath + '#allowsContentScaling=0');
+      // Force refresh of USDZ by adding a version segment
+      const version = 'v' + Date.now();
+      modalViewer.setAttribute('ios-src', `${usdzPath}?${version}#allowsContentScaling=0`);
       
       modalName.textContent = p.name;
       modalPrice.textContent = p.price;
@@ -884,12 +886,13 @@
       // iOS: Apple AR Quick Look
       if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         const usdzPath = p.glb.replace(/\.glb$/i, '.usdz');
+        const version = 'v' + Date.now();
         const a = document.createElement('a');
         a.setAttribute('rel', 'ar');
         const img = document.createElement('img');
         a.appendChild(img);
-        // Disable user scaling in AR Quick Look
-        a.href = base + usdzPath + '#allowsContentScaling=0';
+        // Disable user scaling in AR Quick Look and force cache refresh
+        a.href = `${base}${usdzPath}?${version}#allowsContentScaling=0`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
