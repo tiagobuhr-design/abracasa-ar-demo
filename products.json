@@ -78,5 +78,19 @@
     "slug": "sofa-flip-silver-trama-larga-cinza-mesclado",
     "glb_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb",
     "usdz_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.usdz"
+  },
+  {
+    "name": "Cômoda Elfe 4 Gavetas",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202157/comoda-elfe-4-gavetas-branca-e-savana-diagonal.jpg?v=638820756770670000",
+    "product_url": "https://www.abracasa.com.br/comoda-elfe-4gavetas-porta-com-pes-square/p?skuId=2010236",
+    "category": "comoda",
+    "slug": "comoda-elfe-4-gavetas-e-1-porta"
+  },
+  {
+    "name": "Escrivaninha Nori Natural",
+    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/215357/escrivaninha-nori-natural-diagonal.jpg?v=638936354452030000",
+    "product_url": "https://www.abracasa.com.br/escrivaninha-nori-natural---1-85m/p?skuId=2012375",
+    "category": "escrivaninha",
+    "slug": "escrivaninha-nori-natural-1-85m"
   }
 ]
