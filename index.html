@@ -715,7 +715,7 @@
     <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
     <div class="modal-viewer-container">
       <model-viewer id="modalViewer" src="" auto-rotate camera-controls shadow-intensity="1" environment-image="neutral"
-        ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" style="width:100%;height:100%;background:#1a1a1a;">
+        ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" style="width:100%;height:100%;background:#1a1a1a;">
         <button slot="ar-button" id="arSlotBtn" class="ar-slot-button">
           🏠 Toque para ver na sua sala
         </button>
@@ -888,11 +888,8 @@
         a.setAttribute('rel', 'ar');
         const img = document.createElement('img');
         a.appendChild(img);
-        // Add aggressive scaling lock flags to URL fragment
-        // #allowsContentScaling=0 is the standard for iOS 13+
-        // Add duplicate flags to ensure it works across different iOS versions
-        const flags = '#allowsContentScaling=0&allowsContentScaling=no&allowScalable=0';
-        a.href = base + usdzPath + flags;
+        // Disable user scaling in AR Quick Look
+        a.href = base + usdzPath + '#allowsContentScaling=0';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
