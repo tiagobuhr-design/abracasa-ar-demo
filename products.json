@@ -1,96 +1,44 @@
 [
   {
-    "name": "Poltrona Costela Slim com Puff - Trellis Grafite",
-    "price": "R$ 1.499,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/201950/poltrona-costela-com-puff-slim-trellis-grafite.jpg?v=638820744169070000",
-    "product_url": "https://www.abracasa.com.br/poltrona-costela-com-puff-slim-trellis-grafite/p?skuId=2009072",
-    "category": "poltrona",
-    "slug": "poltrona-costela-slim-com-puff-trellis-grafite",
-    "glb_path": "models/poltrona-costela-slim-com-puff-trellis-grafite.glb",
-    "usdz_path": "models/poltrona-costela-slim-com-puff-trellis-grafite.usdz"
+    "name": "Aparador Buffet Janice",
+    "slug": "aparador-buffet-janice",
+    "price": "R$ 713,92",
+    "category": "aparador",
+    "url": "https://www.magazineluiza.com.br/aparador-buffet-2-portas-ripada-e-2-vidro-temperado-led-pes-em-madeira-janice-cimol-nature-off-white-cimol-moveis/p/aeecdf3j09/mo/buff/?seller_id=ebbamoveis",
+    "image": "https://a-static.mlcdn.com.br/800x600/aparador-buffet-2-portas-ripada-e-2-vidro-temperado-led-pes-em-madeira-janice-cimol-nature-off-white-cimol-moveis/ebbashop/aeecdf3j09/a6ad2c5d80d19f854964646b32898980.jpg",
+    "glb_path": "models/aparador-buffet-janice.glb",
+    "dimensions": {
+      "width_cm": 165,
+      "height_cm": 78,
+      "depth_cm": 45.3
+    }
   },
   {
-    "name": "Poltrona Maggiolina com Puff - Caramelo",
-    "price": "R$ 3.798,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/220896/IMG_6738-1000x1000.jpg?v=639020914485370000",
-    "product_url": "https://www.abracasa.com.br/poltrona-maggiolina-com-puff---caramelo/p?skuId=2008732",
-    "category": "poltrona",
-    "slug": "poltrona-maggiolina-com-puff-caramelo",
-    "glb_path": "models/poltrona-maggiolina-com-puff-caramelo.glb",
-    "usdz_path": "models/poltrona-maggiolina-com-puff-caramelo.usdz"
+    "name": "Balcão Pinus Verde",
+    "slug": "balcao-pinus-verde",
+    "price": "R$ 1.154,88",
+    "category": "balcão",
+    "url": "https://www.moveisripke.com.br/balcao-3-portas-3-gavetas-em-madeira-de-pinus-verde-TEQ011VV",
+    "image": "https://public-resources.zordcdn.com.br/images/products/64/70547/balcao-tequila-3-portas-3-gavetas-em-madeira-de-pinus-verde-a.jpg",
+    "glb_path": "models/balcao-pinus-verde.glb",
+    "dimensions": {
+      "width_cm": 132,
+      "height_cm": 84,
+      "depth_cm": 43
+    }
   },
   {
-    "name": "Poltrona com Puff Costela - Caramelo",
-    "price": "R$ 1.999,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202006/2021_PoltronaCostelaCaramelo.jpg?v=638821365945070000",
-    "product_url": "https://www.abracasa.com.br/poltrona-costela-com-puff-caramelo/p?skuId=2006592",
-    "category": "poltrona",
-    "slug": "poltrona-com-puff-costela-caramelo",
-    "glb_path": "models/poltrona-com-puff-costela-caramelo.glb",
-    "usdz_path": "models/poltrona-com-puff-costela-caramelo.usdz"
-  },
-  {
-    "name": "Poltrona Costela com Puff Tent Pesto",
-    "price": "R$ 1.999,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/215184/xg2.jpg?v=638936346739230000",
-    "product_url": "https://www.abracasa.com.br/poltrona-costela-com-puff-tent-pesto/p?skuId=2012451",
-    "category": "poltrona",
-    "slug": "poltrona-costela-com-puff-tent-pesto",
-    "glb_path": "models/poltrona-costela-com-puff-tent-pesto.glb",
-    "usdz_path": "models/poltrona-costela-com-puff-tent-pesto.usdz"
-  },
-  {
-    "name": "Sofá Noah Trento Verde Pesto",
-    "price": "R$ 2.999,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202773/Shooting-02-07-163_HQ_1000x1000.jpg?v=638823085093830000",
-    "product_url": "https://www.abracasa.com.br/sofa-noah-trento-verde-pesto/p?skuId=2010602",
-    "category": "sofa",
-    "slug": "sofa-noah-trento-verde-pesto",
-    "glb_path": "models/sofa-noah-trento-verde-pesto.glb",
-    "usdz_path": "models/sofa-noah-trento-verde-pesto.usdz"
-  },
-  {
-    "name": "Sofá Giro Trento Verde Pesto",
-    "price": "R$ 3.699,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/221728/sofa-diagonal.jpg?v=639047035446670000",
-    "product_url": "https://www.abracasa.com.br/sofa-giro-trento-verde-pesto/p?skuId=2010776",
-    "category": "sofa",
-    "slug": "sofa-giro-trento-verde-pesto",
-    "glb_path": "models/sofa-giro-trento-verde-pesto.glb",
-    "usdz_path": "models/sofa-giro-trento-verde-pesto.usdz"
-  },
-  {
-    "name": "Sofá Giro Botonê Tijolo",
-    "price": "R$ 3.599,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/206388/xg1.jpg?v=638847327186500000",
-    "product_url": "https://www.abracasa.com.br/sofa-giro-botone-tijolo/p?skuId=2010609",
-    "category": "sofa",
-    "slug": "sofa-giro-botone-tijolo",
-    "glb_path": "models/sofa-giro-botone-tijolo.glb",
-    "usdz_path": "models/sofa-giro-botone-tijolo.usdz"
-  },
-  {
-    "name": "Sofá Flip Silver Trama Larga Cinza Mesclado",
-    "price": "R$ 2.368,88",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/206938/sofa-flip-silver-trama-larga-cinza-mesclado-170-diagonal.jpg?v=638851618760730000",
-    "product_url": "https://www.abracasa.com.br/sofa-flip-silver-trama-larga-cinza-mesclado/p?skuId=2008102",
-    "category": "sofa",
-    "slug": "sofa-flip-silver-trama-larga-cinza-mesclado",
-    "glb_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.glb",
-    "usdz_path": "models/sofa-flip-silver-trama-larga-cinza-mesclado.usdz"
-  },
-  {
-    "name": "Cômoda Elfe 4 Gavetas",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/202157/comoda-elfe-4-gavetas-branca-e-savana-diagonal.jpg?v=638820756770670000",
-    "product_url": "https://www.abracasa.com.br/comoda-elfe-4gavetas-porta-com-pes-square/p?skuId=2010236",
-    "category": "comoda",
-    "slug": "comoda-elfe-4-gavetas-e-1-porta"
-  },
-  {
-    "name": "Escrivaninha Nori Natural",
-    "image_url": "https://abracasa.vteximg.com.br/arquivos/ids/215357/escrivaninha-nori-natural-diagonal.jpg?v=638936354452030000",
-    "product_url": "https://www.abracasa.com.br/escrivaninha-nori-natural---1-85m/p?skuId=2012375",
-    "category": "escrivaninha",
-    "slug": "escrivaninha-nori-natural-1-85m"
+    "name": "Forno Mondial Grand Family 52L",
+    "slug": "forno-mondial-grand-family-52l",
+    "price": "R$ 494,91",
+    "category": "eletrodoméstico",
+    "url": "https://www.mondial.com.br/forno-eletrico-mondial-fr-52-l-grand-family-60hz/p",
+    "image": "https://lojamondial.vteximg.com.br/arquivos/ids/162812-1000-1000/FOTOPRODUTO_FR-52_01.jpg",
+    "glb_path": "models/forno-mondial-grand-family-52l.glb",
+    "dimensions": {
+      "width_cm": 56,
+      "height_cm": 35.2,
+      "depth_cm": 40.2
+    }
   }
 ]
