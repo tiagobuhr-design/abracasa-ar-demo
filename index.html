@@ -711,7 +711,31 @@
     // ─── Render Product Grid ───────────────────────────────
     const grid = document.getElementById('productGrid');
 
-    grid.innerHTML = products.map((p, i) => `
+    function isMobile() {
+      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+    
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const base = window.location.href.split('?')[0].replace(/\/[^\/]*$/, '/');
+
+    grid.innerHTML = products.map((p, i) => {
+      let arRel = "";
+      let arHref = "javascript:void(0);";
+      
+      if (isIOS) {
+        const usdzPath = p.glb.replace(/\.glb$/i, '.usdz');
+        arHref = base + usdzPath + '#allowsContentScaling=0';
+        arRel = 'rel="ar"';
+      } else if (isAndroid) {
+        const glbUrl = base + p.glb;
+        const fallbackUrl = encodeURIComponent(window.location.href);
+        const fileUrl = encodeURIComponent(glbUrl);
+        const title = encodeURIComponent(p.name);
+        arHref = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&resizable=false&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
+      }
+      
+      return `
       <div class="product-card" id="card-${i}">
         <div class="product-card-image">
           <img src="${p.image}" alt="${p.name}" loading="lazy">
@@ -721,11 +745,16 @@
           <h3 class="product-card-name">${p.name}</h3>
           <p class="product-card-price">${p.price}</p>
           <div class="product-card-buttons">
-            <button class="btn btn-ar" onclick="openAR(${i})" style="width:100%">Ver na sua sala 🏠</button>
+            <a class="btn btn-ar" href="${arHref}" ${arRel} onclick="if(!isMobile()) { showToast('📱 Abra esta página no celular para usar o AR'); return false; }" style="display:block; text-align:center; width:100%; text-decoration:none; box-sizing:border-box;">
+              <!-- Invisible explicit image required by iOS AR Quick Look -->
+              <img src="${p.image}" style="display:none; width:0; height:0;" />
+              Ver na sua sala 🏠
+            </a>
           </div>
         </div>
       </div>
-    `).join('');
+      `;
+    }).join('');
 
     // ─── 3D Modal ──────────────────────────────────────────
     const modalOverlay = document.getElementById('modalOverlay');
@@ -765,65 +794,10 @@
       if (e.key === 'Escape') close3D();
     });
 
-    // ─── AR Mode ───────────────────────────────────────────
-    function isMobile() {
-      return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    }
-
-    // Direct OS-level AR intents (bypassing model-viewer for instant launch)
-    function openAR(index) {
-      if (!isMobile()) {
-        showToast('📱 Abra esta página no celular para usar o AR');
-        return;
-      }
-
-      const p = products[index];
-      const base = window.location.href.split('?')[0].replace(/\/[^\/]*$/, '/');
-
-      // iOS: Apple AR Quick Look
-      if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        showToast('Carregando modelo 3D...');
-        const usdzPath = p.glb.replace(/\.glb$/i, '.usdz');
-        const a = document.createElement('a');
-        a.setAttribute('rel', 'ar');
-        const img = document.createElement('img');
-        img.src = p.image; // Crucial for iOS AR Quick Look to not hang forever
-        a.appendChild(img);
-        // Add #allowsContentScaling=0 to strictly disable user scaling
-        a.href = base + usdzPath + '#allowsContentScaling=0';
-        document.body.appendChild(a);
-        a.click();
-        
-        // Remove after a delay to ensure Safari registers the AR navigation
-        setTimeout(() => {
-          if(document.body.contains(a)) document.body.removeChild(a);
-        }, 5000);
-        return;
-      }
-
-      // Android: Google Scene Viewer
-      if (/Android/i.test(navigator.userAgent)) {
-        showToast('Carregando modelo 3D...');
-        const glbUrl = base + p.glb;
-        const fallbackUrl = encodeURIComponent(window.location.href);
-        const fileUrl = encodeURIComponent(glbUrl);
-        const title = encodeURIComponent(p.name);
-        // Add resizable=false to strictly disable user scaling
-        const intentUrl = `intent://arvr.google.com/scene-viewer/1.0?file=${fileUrl}&mode=ar_preferred&resizable=false&title=${title}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${fallbackUrl};end;`;
-
-        const a = document.createElement('a');
-        a.href = intentUrl;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          if(document.body.contains(a)) document.body.removeChild(a);
-        }, 5000);
-        return;
-      }
-    }
-
     function triggerARFromModal(index) {
-      openAR(index);
+      // Logic for AR from modal is not actively used, but kept for compatibility
+      const cardA = document.querySelector(`#card-${index} .btn-ar`);
+      if (cardA) cardA.click();
     }
 
     // ─── Toast ─────────────────────────────────────────────
