@@ -737,17 +737,19 @@
       
       return `
       <div class="product-card" id="card-${i}">
-        <div class="product-card-image">
-          <img src="${p.image}" alt="${p.name}" loading="lazy">
+        <!-- The main image acts as the primary AR anchor link for iOS -->
+        <a href="${arHref}" ${arRel} class="product-card-image" style="display:block; text-decoration:none; color:inherit;" onclick="if(!isMobile()) { showToast('📱 Abra esta página no celular para usar o AR'); return false; }">
+          <img src="${p.image}" alt="${p.name}" loading="lazy" style="display:block;">
           <span class="product-category-tag">${p.category.charAt(0).toUpperCase() + p.category.slice(1)}</span>
-        </div>
+        </a>
         <div class="product-card-body">
           <h3 class="product-card-name">${p.name}</h3>
           <p class="product-card-price">${p.price}</p>
           <div class="product-card-buttons">
+            <!-- The button mimics the exact same link -->
             <a class="btn btn-ar" href="${arHref}" ${arRel} onclick="if(!isMobile()) { showToast('📱 Abra esta página no celular para usar o AR'); return false; }" style="display:block; text-align:center; width:100%; text-decoration:none; box-sizing:border-box;">
-              <!-- Invisible explicit image required by iOS AR Quick Look -->
-              <img src="${p.image}" style="display:none; width:0; height:0;" />
+              <!-- Using a 1x1 transparent block image so Safari accepts it without rendering issues -->
+              <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="width:1px; height:1px; opacity:0; position:absolute; pointer-events:none;" />
               Ver na sua sala 🏠
             </a>
           </div>
