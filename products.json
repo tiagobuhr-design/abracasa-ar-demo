@@ -7,11 +7,7 @@
     "url": "https://www.magazineluiza.com.br/aparador-buffet-2-portas-ripada-e-2-vidro-temperado-led-pes-em-madeira-janice-cimol-nature-off-white-cimol-moveis/p/aeecdf3j09/mo/buff/?seller_id=ebbamoveis",
     "image": "https://a-static.mlcdn.com.br/800x600/aparador-buffet-2-portas-ripada-e-2-vidro-temperado-led-pes-em-madeira-janice-cimol-nature-off-white-cimol-moveis/ebbashop/aeecdf3j09/a6ad2c5d80d19f854964646b32898980.jpg",
     "glb_path": "models/aparador-buffet-janice.glb",
-    "dimensions": {
-      "width_cm": 165,
-      "height_cm": 78,
-      "depth_cm": 45.3
-    }
+    "dimensions": { "width_cm": 165, "height_cm": 78, "depth_cm": 45.3 }
   },
   {
     "name": "Balcão Pinus Verde",
@@ -21,11 +17,7 @@
     "url": "https://www.moveisripke.com.br/balcao-3-portas-3-gavetas-em-madeira-de-pinus-verde-TEQ011VV",
     "image": "https://public-resources.zordcdn.com.br/images/products/64/70547/balcao-tequila-3-portas-3-gavetas-em-madeira-de-pinus-verde-a.jpg",
     "glb_path": "models/balcao-pinus-verde.glb",
-    "dimensions": {
-      "width_cm": 132,
-      "height_cm": 84,
-      "depth_cm": 43
-    }
+    "dimensions": { "width_cm": 132, "height_cm": 84, "depth_cm": 43 }
   },
   {
     "name": "Forno Mondial Grand Family 52L",
@@ -35,10 +27,16 @@
     "url": "https://www.mondial.com.br/forno-eletrico-mondial-fr-52-l-grand-family-60hz/p",
     "image": "https://lojamondial.vteximg.com.br/arquivos/ids/162812-1000-1000/FOTOPRODUTO_FR-52_01.jpg",
     "glb_path": "models/forno-mondial-grand-family-52l.glb",
-    "dimensions": {
-      "width_cm": 56,
-      "height_cm": 35.2,
-      "depth_cm": 40.2
-    }
+    "dimensions": { "width_cm": 56, "height_cm": 35.2, "depth_cm": 40.2 }
+  },
+  {
+    "name": "Sofá Cama Panamá Compose",
+    "slug": "sofa-panama-compose",
+    "price": "R$ 2.079,11",
+    "category": "sofá",
+    "url": "https://www.casaimperial.com.br/sofa-cama-panama-compose/linho-cinza-claro",
+    "image": "https://cdn.dooca.store/102829/products/7.jpg?v=1768507929",
+    "glb_path": "models/sofa-panama-compose.glb",
+    "dimensions": { "width_cm": 176, "height_cm": 90, "depth_cm": 109 }
   }
 ]
